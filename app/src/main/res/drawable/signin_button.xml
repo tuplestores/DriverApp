@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019. TUPLE STORES .All Rights Reserved
+  -->
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- The bottom layer is blue square.-->
+    <item>
+        <shape android:shape="oval">
+            <size
+                android:width="50dp"
+                android:height="50dp" />
+            <solid android:color="@color/colorButtonGrey" />
+        </shape>
+    </item>
+
+    <!-- The middle layer is green circle.-->
+    <item
+        android:left="5dp"
+        android:right="5dp"
+        android:top="5dp"
+        android:bottom="5dp">
+
+        <shape android:shape="oval"
+            >
+            <size
+                android:width="50dp"
+                android:height="50dp" />
+            <solid android:color="@color/colorButtonBlue" />
+        </shape>
+    </item>
+    <!-- The top layer is an image. -->
+    <item android:drawable="@drawable/ic_arrow_white"
+        android:gravity="center"
+        android:width="20dp"
+        android:height="20dp"
+        >
+
+    </item>
+</layer-list>
