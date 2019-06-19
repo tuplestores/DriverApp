@@ -52,7 +52,7 @@
             android:name=".DriverVerificationActivity"
             android:label="@string/title_activity_driver_verification"
             android:theme="@style/AppTheme.NoActionBar">
-           <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -62,11 +62,18 @@
             android:name=".VehicleListActivity"
             android:label="@string/title_activity_vehicle_list"
             android:theme="@style/AppTheme.NoActionBar">
-            <!--<intent-filter>
+
+            <!--
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
+            -->
+        </activity>
+        <activity android:name=".DriverAppHome"
+            android:theme="@style/AppTheme.NoActionBar">
+
         </activity>
     </application>
 

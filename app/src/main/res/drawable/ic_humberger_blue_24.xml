@@ -1,0 +1,13 @@
+<!--
+  ~ Copyright (c) 2019. TUPLE STORES .All Rights Reserved
+  -->
+
+<vector android:height="24dp" android:viewportHeight="28"
+    android:viewportWidth="40" android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="#ff0" android:pathData="M12,0h26a2,2 0,1 1,0 4H12a2,2 0,1 1,0 -4z"/>
+    <path android:fillColor="#327fff" android:pathData="M12,0h26a2,2 0,1 1,0 4H12a2,2 0,1 1,0 -4z"/>
+    <path android:fillColor="#ff0" android:pathData="M2,12h36a2,2 0,0 1,0 4H2a2,2 0,0 1,0 -4z"/>
+    <path android:fillColor="#327fff" android:pathData="M2,12h36a2,2 0,0 1,0 4H2a2,2 0,0 1,0 -4z"/>
+    <path android:fillColor="#ff0" android:pathData="M2,24h26a2,2 0,1 1,0 4H2a2,2 0,1 1,0 -4z"/>
+    <path android:fillColor="#327fff" android:pathData="M2,24h26a2,2 0,1 1,0 4H2a2,2 0,1 1,0 -4z"/>
+</vector>

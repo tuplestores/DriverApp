@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019. TUPLE STORES .All Rights Reserved
+  -->
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Style for "rounded_re" -->
+    <!-- Add this snippet to layer-list xml in drawable. -->
+    <item >
+        <shape android:shape="rectangle">
+            <solid android:color="#ffffff" />
+            <corners android:radius="35dp"></corners>
+            <item android:name="android:shadowColor">#26106aff</item>
+            <!-- TextView shadow offsets do not respect scale. -->
+            <item android:name="android:shadowDx">0</item>
+            <item android:name="android:shadowDy">2</item>
+        </shape>
+    </item>
+
+</layer-list>

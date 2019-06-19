@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019. TUPLE STORES .All Rights Reserved
+  -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="false" android:drawable="@drawable/ic_sw_thumb_green_24">
+        <shape android:dither="true" android:shape="rectangle" android:useLevel="false" android:visible="true">
+            <solid android:color="@color/colorAccent" />
+            <corners android:radius="40dp" />
+            <size android:width="24dp" android:height="25dp" />
+            <stroke android:width="4dp" android:color="#0000ffff" />
+        </shape>
+    </item>
+    <item android:state_checked="true" android:drawable="@drawable/ic_car_rounded_red">
+        <shape android:dither="true" android:shape="rectangle" android:useLevel="false" android:visible="true">
+            <solid android:color="@color/colorAccent" />
+            <corners android:radius="40dp" />
+            <size android:width="24dp" android:height="25dp" />
+            <stroke android:width="4dp" android:color="#0000ffff" />
+        </shape>
+    </item>
+
+</selector>

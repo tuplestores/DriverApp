@@ -7,14 +7,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
+    android:id="@+id/drawer_layout_driver_home"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
+
     <include
-        layout="@layout/app_bar_vehicle_list"
+        layout="@layout/activity_driver_app_home"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
@@ -26,5 +27,4 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_vehicle_list"
         app:menu="@menu/activity_vehicle_list_drawer" />
-
 </androidx.drawerlayout.widget.DrawerLayout>

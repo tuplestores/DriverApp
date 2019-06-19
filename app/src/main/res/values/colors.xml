@@ -10,4 +10,10 @@
     <color name="colortvshade">#f7faff</color>
     <color name="colorButtonBlue">#2d7cff</color>
     <color name="colorButtonGrey">#e1ecff</color>
+    <color name="colorbtnNotActive">#a8adb5</color>
+    <color name="colorbtnTextNotActive">#a8adb5</color>
+    <color name="colorbtnActive">#2d7cff</color>
+    <color name="colorbtnTextActive">#363636</color>
+    <color name="colorswBtnGreen">#49e432</color>
+    <color name="colorswBtnRed">#ff4040</color>
 </resources>

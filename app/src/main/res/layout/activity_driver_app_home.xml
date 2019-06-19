@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019. TUPLE STORES .All Rights Reserved
+  -->
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    tools:context=".DriverAppHome">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Area for Google Map-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorButtonGrey">
+
+            <fragment
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+        </LinearLayout>
+        <!--Map Area ends-->
+        <!--OnTop of Map A relative layout for button and action bar-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+       <!--Button Panel -->
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginStart="10dp"
+           android:layout_marginEnd="10dp"
+           android:padding="10dp"
+           android:layout_alignParentBottom="true"
+           android:layout_marginBottom="30dp"
+           android:background="@drawable/ic_driver_home_btn_panel">
+           <Button
+               android:id="@+id/btnHome"
+               android:layout_weight="1"
+               android:layout_width="wrap_content"
+               android:drawableTop="@drawable/ic_home_act_blue_24"
+               android:gravity="center"
+               android:text="Home"
+               android:visibility="visible"
+               android:textColor="@color/colorbtnTextActive"
+               android:textAllCaps="false"
+               android:background="@null"
+               android:layout_height="wrap_content" />
+           <Button
+               android:id="@+id/btnTrips"
+               android:layout_weight="1"
+               android:layout_width="wrap_content"
+               android:drawableTop="@drawable/ic_trips_grey_24"
+               android:gravity="center"
+               android:text="Trips"
+               android:background="@null"
+               android:textAllCaps="false"
+               android:textColor="@color/colorbtnTextNotActive"
+               android:layout_height="wrap_content" />
+           <Button
+               android:id="@+id/btnProfile"
+               android:layout_weight="1"
+               android:layout_width="wrap_content"
+               android:drawableTop="@drawable/ic_profile_grey_24"
+               android:gravity="center"
+               android:text="Profile"
+               android:background="@null"
+               android:textAllCaps="false"
+               android:textColor="@color/colorbtnTextNotActive"
+               android:layout_height="wrap_content" />
+       </LinearLayout>
+       <!--Button Panel Ends Here-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="20dp"
+            android:padding="10dp"
+            android:background="@null">
+
+            <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/ic_btn_round_bk"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_humberger_blue_24"/>
+
+               <androidx.appcompat.widget.SwitchCompat
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnswith"
+                android:textOff="OffLine"
+                android:textOn="Online"
+                   android:scaleX="2"
+                   android:scaleY="2"
+                   android:layout_marginStart="70dp"
+                   android:layout_marginTop="12dp"
+                   app:track="@drawable/sw_track"
+                android:thumb="@drawable/sw_thumb"/>
+
+            <ImageView
+               android:layout_marginStart="140dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_btn_round_bk"/>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    </FrameLayout>
+
+
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

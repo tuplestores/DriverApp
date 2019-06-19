@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019. TUPLE STORES .All Rights Reserved
+  -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<item android:width="50dp" android:height="50dp">
+    <shape android:shape="oval">
+        <stroke android:width="2dp" android:color="#ffe0ecff" />
+        <solid android:color="#fff" />
+      81ff" android:angle="90" />
+        <item android:name="android:shadowColor">#26106aff</item>
+        <!-- TextView shadow offsets do not respect scale. -->
+        <item android:name="android:shadowDx">0</item>
+        <item android:name="android:shadowDy">2</item>
+    </shape>
+</item>
+</layer-list>
