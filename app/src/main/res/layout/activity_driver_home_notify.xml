@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019. TUPLE STORES .All Rights Reserved
+  -->
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    tools:context=".DriverAppHome">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Area for Google Map-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorButtonGrey">
+
+            <fragment
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+        </LinearLayout>
+        <!--Map Area ends-->
+        <!--OnTop of Map A relative layout for button and action bar-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <!--Button Panel -->
+            <LinearLayout
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="30dp"
+                android:background="@drawable/ic_driver_home_btn_panel">
+                <Button
+                    android:id="@+id/btnHome"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:drawableTop="@drawable/ic_home_act_blue_24"
+                    android:gravity="center"
+                    android:text="Home"
+                    android:visibility="visible"
+                    android:textColor="@color/colorbtnTextActive"
+                    android:textAllCaps="false"
+                    android:background="@null"
+                    android:layout_height="wrap_content" />
+                <Button
+                    android:id="@+id/btnTrips"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:drawableTop="@drawable/ic_trips_grey_24"
+                    android:gravity="center"
+                    android:text="Trips"
+                    android:background="@null"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorbtnTextNotActive"
+                    android:layout_height="wrap_content" />
+                <Button
+                    android:id="@+id/btnProfile"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:drawableTop="@drawable/ic_profile_grey_24"
+                    android:gravity="center"
+                    android:text="Profile"
+                    android:background="@null"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorbtnTextNotActive"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <!--Button Panel Ends Here-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="0dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:paddingTop="0dp"
+                android:paddingRight="6dp"
+                android:paddingLeft="6dp"
+                android:background="@null">
+
+                <androidx.cardview.widget.CardView
+                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="290dp"
+                    android:layout_gravity="center"
+                    card_view:cardBackgroundColor="@android:color/transparent"
+                    card_view:cardCornerRadius="0dp"
+                    card_view:cardElevation="6dp">
+
+                    <androidx.cardview.widget.CardView
+                        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/card_view_inner"
+                        android:layout_width="match_parent"
+                        android:layout_height="290dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="3dp"
+                        card_view:cardBackgroundColor="#ffff"
+                        card_view:cardCornerRadius="8dp"
+                        card_view:cardElevation="6dp" >
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+                            <LinearLayout
+                                android:id="@+id/linlay_line"
+                                android:layout_width="75dp"
+                                android:layout_height="5dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_alignParentTop="true"
+                                android:layout_centerInParent="true"
+                                android:orientation="horizontal"
+                                android:background="@drawable/ic_line">
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_marginEnd="10dp"
+                                android:paddingTop="15dp"
+                                android:paddingBottom="10dp"
+                                android:layout_alignParentRight="true"
+                                android:layout_below="@id/linlay_line">
+
+                                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                   android:backgroundTint="#2f7eff"
+                                    app:borderWidth="0dp"
+                                    app:elevation="2dp"
+                                    android:scaleType="fitXY"
+                                    android:layout_marginTop="-9dp"
+                                    app:useCompatPadding="true"
+                                    app:fabSize="mini"
+                                    android:src="@drawable/ic_phone_white_24"
+                                    />
+                                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:backgroundTint="#01da9f"
+                                    app:borderWidth="0dp"
+                                    app:elevation="2dp"
+                                    app:fabSize="mini"
+                                    android:src="@drawable/ic_loc_find_white"
+                                    android:layout_marginTop="-9dp"
+                                    app:useCompatPadding="true"
+                                    /> />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/linlay_callpanel"
+                                android:layout_below="@id/linlay_line"
+                                android:layout_alignParentStart="true"
+                                android:orientation="horizontal"
+                                android:layout_marginTop="5dp"
+                                android:padding="15dp">
+
+                                <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    android:id="@+id/rider_image"
+                                    android:layout_width="60dp"
+                                    android:layout_height="60dp"
+                                    android:layout_gravity="end"
+                                    android:src="@drawable/rider"
+                                    app:civ_border_color="#ffff"
+                                    app:civ_border_width="2dp" />
+
+                                <TextView
+                                    android:id="@+id/txtRidername"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginTop="10dp"
+                                    android:textAllCaps="false"
+                                    android:textSize="14dp"
+                                    android:textColor="#ff363636"
+                                    android:text="Cathrine Jennifer" />
+
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_below="@id/linlay_callpanel"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:background="#e9f1fd">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Pick up Location"
+                                    android:textSize="14dp"
+                                    android:padding="1dp"
+                                    android:layout_marginTop="5dp"
+                                    android:textColor="#ff106aff"/>
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Medical College Junction"
+                                    android:textSize="16dp"
+                                    android:padding="1dp"
+                                    android:layout_marginTop="2dp"
+                                    android:textColor="#ff363636"/>
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Drop Location"
+                                    android:textSize="14dp"
+                                    android:padding="1dp"
+                                    android:layout_marginTop="10dp"
+                                    android:textColor="#ffff3535"/>
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="C/60 Albian Street, Kozhikode"
+                                    android:textSize="16dp"
+                                    android:padding="1dp"
+                                    android:layout_marginTop="2dp"
+                                    android:textColor="#ff363636"/>
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="85dp"
+                                    android:padding="5dp">
+                                <Button
+                                    android:layout_width="120dp"
+                                    android:layout_height="40dp"
+                                    android:background="@drawable/ic_round_rect_blue"
+                                    android:textColor="#ffffffff"
+                                    android:textSize="16dp"
+                                    android:text="Arrived"
+                                    android:textAllCaps="false"
+                                    android:gravity="center"
+                                    android:padding="2dp"
+                                    android:layout_marginTop="8dp"/>
+
+                                <Button
+                                    android:layout_width="120dp"
+                                    android:layout_marginLeft="10dp"
+                                    android:background="@drawable/ic_round_rect_red"
+                                    android:layout_height="40dp"
+                                    android:textSize="16dp"
+                                    android:textColor="#ffffffff"
+                                    android:gravity="center"
+                                    android:text="Cancel"
+                                    android:textAllCaps="false"
+                                    android:layout_marginTop="8dp"/>
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+
+
+
+                        </RelativeLayout>
+                    </androidx.cardview.widget.CardView>
+
+
+                </androidx.cardview.widget.CardView>
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="20dp"
+                android:padding="10dp"
+                android:background="@null">
+
+                <ImageButton
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/ic_btn_round_bk"
+                    android:src="@drawable/ic_humberger_blue_24"/>
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btnswith"
+                    android:textOff="OffLine"
+                    android:textOn="Online"
+                    android:scaleX="2"
+                    android:scaleY="2"
+                    android:layout_marginStart="70dp"
+                    android:layout_marginTop="15dp"
+                    app:track="@drawable/sw_track"
+                    android:thumb="@drawable/sw_thumb"/>
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/profile_image"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/profile"
+                    app:civ_border_width="2dp"
+                    android:layout_gravity="end"
+                    android:layout_marginLeft="140dp"
+                    app:civ_border_color="#ffffffff"/>
+            </LinearLayout>
+        </RelativeLayout>
+
+    </FrameLayout>
+
+
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -6,7 +6,7 @@
 <resources>
     <color name="colorPrimary">#ffffff</color>
     <color name="colorPrimaryDark">#ffffff</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccent">#ffffff</color>
     <color name="colortvshade">#f7faff</color>
     <color name="colorButtonBlue">#2d7cff</color>
     <color name="colorButtonGrey">#e1ecff</color>

@@ -71,10 +71,11 @@
             </intent-filter>
             -->
         </activity>
-        <activity android:name=".DriverAppHome"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+        <activity
+            android:name=".DriverAppHome"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".driver_home_notify" />
+        <activity android:name=".DriverHomeNotifyActivity"></activity>
     </application>
 
 </manifest>

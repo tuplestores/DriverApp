@@ -80,6 +80,8 @@
                android:layout_height="wrap_content" />
        </LinearLayout>
        <!--Button Panel Ends Here-->
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -92,7 +94,6 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:background="@drawable/ic_btn_round_bk"
-                android:layout_gravity="center"
                 android:src="@drawable/ic_humberger_blue_24"/>
 
                <androidx.appcompat.widget.SwitchCompat
@@ -104,16 +105,20 @@
                    android:scaleX="2"
                    android:scaleY="2"
                    android:layout_marginStart="70dp"
-                   android:layout_marginTop="12dp"
+                   android:layout_marginTop="15dp"
                    app:track="@drawable/sw_track"
                 android:thumb="@drawable/sw_thumb"/>
 
-            <ImageView
-               android:layout_marginStart="140dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ic_btn_round_bk"/>
-
+            <de.hdodenhof.circleimageview.CircleImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/profile_image"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/profile"
+                app:civ_border_width="2dp"
+                android:layout_gravity="end"
+                android:layout_marginLeft="140dp"
+                app:civ_border_color="#ffffffff"/>
         </LinearLayout>
     </RelativeLayout>
 
