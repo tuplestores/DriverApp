@@ -74,8 +74,8 @@
         <activity
             android:name=".DriverAppHome"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".driver_home_notify" />
-        <activity android:name=".DriverHomeNotifyActivity"></activity>
+        <activity android:name=".DriverArrivedActivity" />
+        <activity android:name=".TripRequestActivity"></activity>
     </application>
 
 </manifest>

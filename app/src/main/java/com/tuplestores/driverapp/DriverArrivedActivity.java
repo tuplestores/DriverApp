@@ -8,11 +8,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class DriverHomeNotifyActivity extends AppCompatActivity {
+public class DriverArrivedActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_driver_app_home_notify_drw_main);
+        setContentView(R.layout.driver_arrived_drw_main);
     }
 }

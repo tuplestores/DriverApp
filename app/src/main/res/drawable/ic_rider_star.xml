@@ -1,0 +1,18 @@
+<!--
+  ~ Copyright (c) 2019. TUPLE STORES .All Rights Reserved
+  -->
+
+<vector android:height="18dp" android:viewportHeight="55"
+    android:viewportWidth="55" android:width="18dp"
+    xmlns:aapt="http://schemas.android.com/aapt" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="#106aff" android:pathData="M27.5,13l3.46,6.285L38,20.64l-4.9,5.239 0.89,7.121 -6.49,-3.047 -6.488,3.047 0.89,-7.121 -4.9,-5.239 7.038,-1.354L27.5,13"/>
+    <path android:pathData="M27.5,13l3.46,6.285L38,20.64l-4.9,5.239 0.89,7.121 -6.49,-3.047 -6.488,3.047 0.89,-7.121 -4.9,-5.239 7.038,-1.354L27.5,13">
+        <aapt:attr name="android:fillColor">
+            <gradient android:endX="27" android:endY="13"
+                android:startX="28" android:startY="33" android:type="linear">
+                <item android:color="#FFFF3535" android:offset="0"/>
+                <item android:color="#FFFF5656" android:offset="1"/>
+            </gradient>
+        </aapt:attr>
+    </path>
+</vector>

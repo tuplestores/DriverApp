@@ -22,6 +22,8 @@ public class DriverAppHome extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.activity_driver_app_home_drw_main);
+
     }
 
     private void Initialize(){

@@ -14,7 +14,7 @@
     tools:openDrawer="start">
 
     <include
-        layout="@layout/activity_driver_home_notify"
+        layout="@layout/activity_driver_arrived"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
