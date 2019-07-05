@@ -44,6 +44,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
         <activity
             android:name=".MapsActivity"
@@ -51,13 +54,7 @@
         <activity
             android:name=".DriverVerificationActivity"
             android:label="@string/title_activity_driver_verification"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".VehicleListActivity"
             android:label="@string/title_activity_vehicle_list"
@@ -73,10 +70,20 @@
         </activity>
         <activity
             android:name=".DriverAppHome"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".DriverArrivedActivity" />
-        <activity android:name=".TripRequestActivity" />
-        <activity android:name=".DriverProfileActivity"></activity>
+        <activity
+            android:name=".TripRequestActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".DriverProfileActivity" />
+        <activity android:name=".TripsListActivity" />
+        <activity android:name=".DriverProfileEditActivity"></activity>
     </application>
 
 </manifest>

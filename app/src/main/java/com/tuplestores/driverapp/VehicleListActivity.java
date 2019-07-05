@@ -4,6 +4,9 @@
 
 package com.tuplestores.driverapp;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -12,87 +15,309 @@ import com.google.android.material.snackbar.Snackbar;
 import android.view.View;
 
 import com.google.android.material.navigation.NavigationView;
+import com.tuplestores.driverapp.api.ApiClient;
+import com.tuplestores.driverapp.api.ApiInterface;
+import com.tuplestores.driverapp.model.ApiResponse;
+import com.tuplestores.driverapp.model.VehicleModel;
+import com.tuplestores.driverapp.modeladapter.VehicleListAdapter;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.view.GravityCompat;
+import androidx.core.view.MenuItemCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
-public class VehicleListActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.here.android.mpa.internal.r.h;
+
+public class VehicleListActivity extends AppCompatActivity {
+
+    List<VehicleModel> lstVehicle = null;
+    String driverId;
+    String tenantId;
+
+    ListView lvVehicle;
+    VehicleListAdapter vadpater;
+     LinearLayout linlayrootPanel;
+
+    ProgressBar pgBar;
+    Context ctx;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vehicle_list);
+       // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+       // setSupportActionBar(toolbar);
+
+
+        Initialize();
+    }
+
+    private void Initialize(){
+
+        driverId = this.getIntent().getStringExtra("DRIVER_ID");
+        tenantId = this.getIntent().getStringExtra("TENANT_ID");
+
+        linlayrootPanel = (LinearLayout)findViewById(R.id.linlayrootPanel) ;
+        pgBar = (ProgressBar) findViewById(R.id.pgBar);
+        pgBar.setVisibility(View.GONE);
+        lvVehicle = (ListView) findViewById(R.id.lvVehicles);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        ctx = this;
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
+        lstVehicle = new ArrayList<VehicleModel>();
 
+        lvVehicle.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,
+                                    long id) {
+                VehicleModel vm = (VehicleModel) parent.getAdapter().getItem(position);
+                //Call Attach API
+                doDriverChekIn(vm.getVehicle_id(),vm.getPlate_number(),driverId,tenantId);
+            }
+        });
 
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        fillVehicleList();
     }
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+    private void fillVehicleList(){
+
+        ApiInterface apiService =
+                ApiClient.getClient().create(ApiInterface.class);
+
+        Call<List<VehicleModel>> call = apiService.getvehiclelist("");
+
+        call.enqueue(new Callback<List<VehicleModel>>() {
+            @Override
+            public void onResponse(Call<List<VehicleModel>> call, Response<List<VehicleModel>> response) {
+
+                if(response.body()!=null){
+
+                   lstVehicle = response.body();
+                   vadpater = new VehicleListAdapter(lstVehicle ,getBaseContext());
+                   lvVehicle.setAdapter(vadpater);
+
+
+                }
+                else  if(response.body()==null){
+
+                    lstVehicle = null;
+                    //Show Blank template;
+
+
+                }
+            }//OnResponse
+
+            @Override
+            public void onFailure(Call<List<VehicleModel>> call, Throwable t) {
+
+                //Something went wrong
+                ShowAlert(getBaseContext(),"",getResources().getString(R.string.something_failed));
+
+            }
+        });
     }
+
+    private void doDriverChekIn(String vehicleId, final String vPlate, String driverId, String tenantId){
+
+        //Call the API
+        final ApiInterface apiService =
+                ApiClient.getClient().create(ApiInterface.class);
+
+
+        Call<ApiResponse> call = apiService.attachVehile(vehicleId,driverId,tenantId);
+        showProgressBar();
+        call.enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+
+                hideProgressBar();
+                if(response.body()!=null){
+
+                    ApiResponse api = response.body();
+                    if(api.getStatus() == "Y"){
+
+                        ShowAlertAfterCheckin(getBaseContext(),"S",vPlate);
+                    }
+
+                }
+                else  if(response.body()==null){
+
+                    ShowAlertAfterCheckin(getBaseContext(),"F",vPlate);
+
+                }
+            }//OnResponse
+
+            @Override
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+
+                hideProgressBar();
+                //Something went wrong
+                ShowAlert(getBaseContext(),"",getResources().getString(R.string.something_failed));
+
+            }
+        });
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.vehicle_list, menu);
+        getMenuInflater().inflate(R.menu.menu_vehicle_list, menu);
+        MenuItem searchViewItem = menu.findItem(R.id.app_bar_search);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchViewItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchView.clearFocus();
+                return false;
+
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+
+                if(lstVehicle!=null){
+
+                    List<VehicleModel> lsttemp = new ArrayList<VehicleModel>();
+                    for(VehicleModel v : lstVehicle){
+
+                        if(v.getVehicle_name().toLowerCase().contains(newText.toLowerCase())){
+                            lsttemp.add(v);
+                        }
+                    }
+
+                    VehicleListAdapter adptTemp = new VehicleListAdapter(lsttemp,getBaseContext());
+                    lvVehicle.setAdapter(adptTemp);
+                    lsttemp = null;
+                    adptTemp = null;
+
+
+                }
+
+                return true;
+
+            }
+        });
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+
+    private void ShowAlert(Context ctx, String focus, String msg){
+
+        androidx.appcompat.app.AlertDialog.Builder dlg = null;
+            dlg =   new AlertDialog.Builder(ctx,R.style.AlertDialogTheme)
+                    .setTitle("")
+                    .setMessage(msg)
+
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                          finish();
+                        }
+                    });
+        if(dlg!=null){
+
+            dlg.show();
         }
+    }//ShowAlert
 
-        return super.onOptionsItemSelected(item);
+    private void ShowAlertAfterCheckin(Context ctx, String focus,String vPlate){
+
+        androidx.appcompat.app.AlertDialog.Builder dlg = null;
+
+        if(focus == "S") {
+            dlg = new AlertDialog.Builder(ctx, R.style.AlertDialogTheme)
+                    .setTitle("")
+                    .setMessage(getResources().getString(R.string.check_in_success) +" "+
+                            getResources().getString(R.string.check_in_success) +" " +vPlate)
+
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                           goDriverHome();//Go to Driver Home
+                        }
+                    });
+        }
+        else if (focus == "F"){
+
+            dlg = new AlertDialog.Builder(ctx, R.style.AlertDialogTheme)
+                    .setTitle("")
+                    .setMessage(getResources().getString(R.string.check_in_failed))
+
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            finish();//Finish it
+                        }
+                    });
+        }
+        if(dlg!=null){
+
+            dlg.show();
+        }
+    }//ShowAlert
+
+    private void goDriverHome(){
+
+        Intent ii = new Intent(this,DriverAppHome.class);
+        startActivity(ii);
+        finish();
+
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
+    private void showProgressBar(){
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        pgBar.setVisibility(View.VISIBLE);  //To show ProgressBar
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
-        } else if (id == R.id.nav_slideshow) {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
+
+    private void hideProgressBar(){
+
+        if(pgBar!=null){
+
+            pgBar.setVisibility(View.GONE);     // To Hide ProgressBar
+        }
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
+    }
+
 }

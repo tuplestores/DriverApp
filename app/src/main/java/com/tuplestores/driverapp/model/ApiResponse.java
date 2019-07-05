@@ -12,7 +12,7 @@ public class ApiResponse {
 
     @SerializedName("status")
     private String status;
-    @SerializedName("status")
+    @SerializedName("msg")
     private String msg;
 
 

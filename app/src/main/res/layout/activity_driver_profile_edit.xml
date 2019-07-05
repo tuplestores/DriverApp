@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019. TUPLE STORES .All Rights Reserved
+  -->
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".DriverProfileEditActivity">
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="59dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp">
+        <ProgressBar
+            android:id="@+id/pgBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:max="100"
+            android:backgroundTint="@color/colorTextRed"
+            android:indeterminateTint="@color/colorTextBlue"
+            android:layout_marginTop="-5dp"
+           />
+
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_width="match_parent"
+            android:gravity="center_vertical|center_horizontal"
+            android:layout_height="wrap_content">
+            <de.hdodenhof.circleimageview.CircleImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/profile_image"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:src="@drawable/rider"
+                app:civ_border_width="2dp"
+                app:civ_border_color="#ffffffff"
+                android:layout_centerInParent="true"/>
+
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/edt_name"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:hint="Name"
+            android:layout_height="wrap_content" />
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+
+
+        <EditText
+            android:id="@+id/edt_isd"
+            android:layout_width="wrap_content"
+            android:hint="ISD"
+            android:layout_height="wrap_content" />
+        <EditText
+            android:id="@+id/edt_mobile_number"
+            android:layout_marginLeft="2dp"
+            android:layout_width="match_parent"
+            android:hint="Mobile Number"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
+        <EditText
+            android:id="@+id/edt_email"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:hint="Email"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btn_update"
+            android:layout_marginTop="50dp"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginEnd="10dp"
+            android:text="Update"
+            android:textColor="#ffff"
+            android:textSize="16dp"
+            android:background="@drawable/ic_round_rect_blue_nosize"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

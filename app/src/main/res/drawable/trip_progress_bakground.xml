@@ -9,6 +9,6 @@
     <size android:width="80dp" android:height="80dp"></size>
 
     <solid android:color="#ffff"></solid>
-    <stroke  android:color="@color/colorswBtnGreen"></stroke>
+    <stroke  android:color="#cfdff9" android:width="3dp"></stroke>
 
 </shape>

@@ -36,5 +36,14 @@
     <string name="cancel">Cancel</string>
     <string name="accept">Accept</string>
     <string name="decline">Decline</string>
+    <string name="pls_input_invite_code">Invite code is a must!!!</string>
+    <string name="pls_input_mobile">Mobile number is a must!!!</string>
+    <string name="verify_failed">Failed to verify the mobile number!! Please contact administrator</string>
+    <string name="something_failed">Something went wrong with server!! Please contact adminsitrator</string>
+    <string name="check_in_success">You are checked in successfully to</string>
+    <string name="check_in_success2">Vehicle Plate Number : </string>
+    <string name="check_in_failed">Failed to checkin.. please contact administrator</string>
+    <string name="title_activity_trips_list_home">trips_list_home</string>
+    <string name="profile_udpate_success">Your profile updated successfully !!</string>
 
 </resources>
