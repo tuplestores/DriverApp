@@ -9,17 +9,21 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/nav_attach_vehicle"
             android:icon="@drawable/ic_menu_camera"
             android:title="Attach Vehicle" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_detach_vehicle"
             android:icon="@drawable/ic_menu_gallery"
             android:title="Detach Vehicle" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_sign_out"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="Sign out" />
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Profile" />
 
     </group>
 

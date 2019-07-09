@@ -54,7 +54,7 @@
         <activity
             android:name=".DriverVerificationActivity"
             android:label="@string/title_activity_driver_verification"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".VehicleListActivity"
             android:label="@string/title_activity_vehicle_list"
@@ -71,7 +71,7 @@
         <activity
             android:name=".DriverAppHome"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
+               <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -80,10 +80,26 @@
         <activity android:name=".DriverArrivedActivity" />
         <activity
             android:name=".TripRequestActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".DriverProfileActivity" />
         <activity android:name=".TripsListActivity" />
-        <activity android:name=".DriverProfileEditActivity"></activity>
+        <activity android:name=".DriverProfileEditActivity" />
+
+        <receiver android:name=".services.LocationUpdatesBroadcastReceiver" />
+
+        <service
+            android:name=".services.LocationFGService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".ServiceTests">
+<!--
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
     </application>
 
 </manifest>

@@ -9,25 +9,34 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.Manifest;
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Parcelable;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -38,9 +47,19 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.tuplestores.driverapp.services.LocationFGService;
 import com.tuplestores.driverapp.services.LocationUpdatesBroadcastReceiver;
 
 /*Created By Ajish Dharman on 04-July-2019
@@ -68,7 +87,7 @@ import com.tuplestores.driverapp.services.LocationUpdatesBroadcastReceiver;
  * updates less frequently than the interval specified in the {@link LocationRequest} when the app
  * is no longer in the foreground.
  */
-public class DriverAppHome extends AppCompatActivity {
+public class DriverAppHome extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener,OnMapReadyCallback {
 
 
     Button btnHome;
@@ -88,52 +107,18 @@ public class DriverAppHome extends AppCompatActivity {
     Button btnDecline;
     Activity thisActivity;
     SwitchCompat btnswith;
+    ImageButton img_btn_nav_draw;
+
+    private GoogleMap mMap;
 
     /////////////////////////////////Related to Location ////////////////////////////////
 
     private static final String TAG ="FUSED_HELPER";
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
-    /**
-     * The desired interval for location updates. Inexact. Updates may be more or less frequent.
-     */
-    private static final long UPDATE_INTERVAL = 10000; // Every 60 seconds.
-
-    /**
-     * The fastest rate for active location updates. Updates will never be more frequent
-     * than this value, but they may be less frequent.
-     */
-    private static final long FASTEST_UPDATE_INTERVAL = 10000; // Every 30 seconds
-
-    /**
-     * The max time before batched results are delivered by location services. Results may be
-     * delivered sooner than this interval.
-     */
-    private static final long MAX_WAIT_TIME = UPDATE_INTERVAL * 5; // Every 5 minutes.
-
-    /**
-     * Stores parameters for requests to the FusedLocationProviderApi.
-     */
-    private LocationRequest mLocationRequest;
-
-    /**
-     * Provides access to the Fused Location Provider API.
-     */
-    private FusedLocationProviderClient mFusedLocationClient;
 
     boolean permissionGranted = false;
 
-    /**
-     * Callback for Location events.
-     */
-    private LocationCallback mLocationCallback;
-
-    /**
-     * Represents a geographical location.
-     */
-    private Location mCurrentLocation;
-
-    boolean mLocatonRequested=false;
-
+    BroadcastReceiver receiver;
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////
@@ -145,15 +130,14 @@ public class DriverAppHome extends AppCompatActivity {
         setContentView(R.layout.activity_driver_app_home_drw_main);
         Initialize();
 
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
         // Check if the user revoked runtime permissions.
         if (!checkPermissions()) {
             requestPermissions();
         }
-
-        // Kick off the process of building the LocationCallback, LocationRequest objects
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
-        createLocationRequest();
-        createLocationCallback();
 
     }
 
@@ -174,9 +158,16 @@ public class DriverAppHome extends AppCompatActivity {
         btnAccept = (Button)findViewById(R.id.btnAccept);
         btnDecline = (Button)findViewById(R.id.btnDecline);
         btnswith = (SwitchCompat) (findViewById(R.id.btnswith));
+        img_btn_nav_draw = (ImageButton) findViewById(R.id.img_btn_nav_draw);
 
         counter = 1;
         thisActivity = this;
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_driver_home);
+
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
 
         Animation an = new RotateAnimation(0.0f, 90.0f, 80f, 80f);
@@ -207,10 +198,8 @@ public class DriverAppHome extends AppCompatActivity {
 
                 if(isChecked && permissionGranted){
 
-                    requestLocationUpdates();
-                }
-                else{
-                    stopLocationUpdates();
+                    startLocationService();
+
                 }
             }
         });
@@ -226,12 +215,20 @@ public class DriverAppHome extends AppCompatActivity {
                     toggleButtonState("HOME");
                     //Do the stuff for home
                 }
-                else if(v.getId() == R.id.btnTrips){
+
+            }
+        });
+
+        btnTrips.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                 if(v.getId() == R.id.btnTrips){
                     toggleButtonState("TRIPS");
                     //Do the stuff for Trips
-                    Intent ii = new Intent(thisActivity,TripsListActivity.class);
-                    startActivity(ii);
-                    thisActivity.finish();
+                    //Intent ii = new Intent(thisActivity,TripsListActivity.class);
+                    //startActivity(ii);
+                    //thisActivity.finish();
                 } else if (v.getId() == R.id.btnProfile){
 
                     toggleButtonState("PROFILE");
@@ -243,7 +240,49 @@ public class DriverAppHome extends AppCompatActivity {
             }
         });
 
+        btnProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.getId() == R.id.btnProfile){
+
+                    toggleButtonState("PROFILE");
+                    Intent ii = new Intent(thisActivity,DriverProfileActivity.class);
+                    startActivity(ii);
+                    thisActivity.finish();
+
+                }
+            }
+        });
+
+        img_btn_nav_draw.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_driver_home);
+                if (drawer.isDrawerOpen(GravityCompat.START)) {
+                    drawer.closeDrawer(GravityCompat.START);
+                } else  {
+                    drawer.openDrawer(GravityCompat.START);
+                }
+            }
+        });
+
+        ///LBS Receiver
+
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+               Location loc  = intent.getExtras().getParcelable(LocationFGService.TAXI_DISPATCH_LBS_MSG);
+                //Zoom to that location in map
+                if(loc!=null) {
+                    updateMapCamerabyZoom(loc);
+                }
+            }
+        };
+
     }
+
+
 
     /**
      * This method for startTimer for the progress bar (circular ) which shows the time to accept
@@ -467,105 +506,6 @@ public class DriverAppHome extends AppCompatActivity {
     }
 
 
-    /**
-     * Sets up the location request. Android has two location request settings:
-     * {@code ACCESS_COARSE_LOCATION} and {@code ACCESS_FINE_LOCATION}. These settings control
-     * the accuracy of the current location. This sample uses ACCESS_FINE_LOCATION, as defined in
-     * the AndroidManifest.xml.
-     * <p/>
-     * When the ACCESS_FINE_LOCATION setting is specified, combined with a fast update
-     * interval (5 seconds), the Fused Location Provider API returns location updates that are
-     * accurate to within a few feet.
-     * <p/>
-     * These settings are appropriate for mapping applications that show real-time location
-     * updates.
-     */
-    private void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
-
-        // Sets the desired interval for active location updates. This interval is
-        // inexact. You may not receive updates at all if no location sources are available, or
-        // you may receive them slower than requested. You may also receive updates faster than
-        // requested if other applications are requesting location at a faster interval.
-        // Note: apps running on "O" devices (regardless of targetSdkVersion) may receive updates
-        // less frequently than this interval when the app is no longer in the foreground.
-        mLocationRequest.setInterval(UPDATE_INTERVAL);
-
-        // Sets the fastest rate for active location updates. This interval is exact, and your
-        // application will never receive updates faster than this value.
-        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL);
-
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        // Sets the maximum time when batched location updates are delivered. Updates may be
-        // delivered sooner than this interval.
-        mLocationRequest.setMaxWaitTime(MAX_WAIT_TIME);
-    }
-
-    private PendingIntent getPendingIntent() {
-        // Note: for apps targeting API level 25 ("Nougat") or lower, either
-        // PendingIntent.getService() or PendingIntent.getBroadcast() may be used when requesting
-        // location updates. For apps targeting API level O, only
-        // PendingIntent.getBroadcast() should be used. This is due to the limits placed on services
-        // started in the background in "O".
-
-        // TODO(developer): uncomment to use PendingIntent.getService().
-        // Intent intent = new Intent(this, LocationUpdatesIntentService.class);
-       //intent.setAction(LocationUpdatesIntentService.ACTION_PROCESS_UPDATES);
-       // return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-       Intent intent = new Intent(this, LocationUpdatesBroadcastReceiver.class);
-       intent.setAction(LocationUpdatesBroadcastReceiver.ACTION_PROCESS_UPDATES);
-      return PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-    }
-
-
-    /**
-     * Handles the Request Updates button and requests start of location updates.
-     */
-    public void requestLocationUpdates() {
-        try {
-            Log.i(TAG, "Starting location updates");
-            mFusedLocationClient.requestLocationUpdates(mLocationRequest,getPendingIntent());
-
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Removes location updates from the FusedLocationApi.
-     */
-    private void stopLocationUpdates() {
-
-
-        // It is a good practice to remove location requests when the activity is in a paused or
-        // stopped state. Doing so helps battery performance and is especially
-        // recommended in applications that request frequent location updates.
-        mFusedLocationClient.removeLocationUpdates(mLocationCallback)
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-
-                        mLocatonRequested = false;
-                    }
-                });
-    }
-
-    /**
-     * Creates a callback for receiving location events.
-     */
-    private void createLocationCallback() {
-        mLocationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                super.onLocationResult(locationResult);
-
-                mCurrentLocation = locationResult.getLastLocation();
-
-            }
-        };
-    }
 
     @Override
     protected void onPause() {
@@ -582,5 +522,95 @@ public class DriverAppHome extends AppCompatActivity {
             requestPermissions();
         }
         super.onResume();
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_attach_vehicle) {
+            // Handle the camera action
+        } else if (id == R.id.nav_detach_vehicle) {
+
+        } else if (id == R.id.nav_sign_out) {
+
+        } else if (id == R.id.nav_profile) {
+
+        }
+
+
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_driver_home);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_driver_home);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        LocalBroadcastManager.getInstance(this).registerReceiver((receiver),
+                new IntentFilter(LocationFGService.TAXI_DISPATCH_LBS)
+        );
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+
+         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+         super.onStop();
+
+        }
+
+        private  void startLocationService(){
+
+           Intent ii = new Intent(this,LocationFGService.class);
+           ContextCompat.startForegroundService(this,ii);
+
+        }
+
+    private  void stopLocationService(){
+
+        Intent ii = new Intent(this,LocationFGService.class);
+        stopService(ii);
+
+    }
+
+    private void updateMapCamerabyZoom(Location loc){
+
+        CameraUpdate center=
+                CameraUpdateFactory.newLatLng(new LatLng( loc.getLatitude(),
+                        loc.getLongitude()));
+        CameraUpdate zoom=CameraUpdateFactory.zoomTo(15);
+
+        if(null!=mMap) {
+
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(loc.getLatitude(),loc.getLongitude()))
+                    .title("Marker in Sydney"))
+                    .setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker2));
+            mMap.moveCamera(center);
+            mMap.animateCamera(zoom);
+        }
+
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+        mMap = googleMap;
+
     }
 }//Class

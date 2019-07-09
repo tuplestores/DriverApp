@@ -13,6 +13,10 @@ import android.os.IBinder;
 
 public class LocationBGService extends Service {
 
+
+
+
+
     public LocationBGService() {
     }
 

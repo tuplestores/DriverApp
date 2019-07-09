@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.location.LocationResult;
 
@@ -47,6 +48,7 @@ public class LocationUpdatesBroadcastReceiver extends BroadcastReceiver {
                     List<Location> locations = result.getLocations();
                    // Utils.setLocationUpdatesResult(context, locations);
                    // Log.i(TAG, Utils.getLocationUpdatesResult(context));
+                    Toast.makeText(context,"Locations reeived;",Toast.LENGTH_SHORT).show();
                 }
             }
         }

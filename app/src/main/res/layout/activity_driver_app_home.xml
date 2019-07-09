@@ -343,6 +343,7 @@
                 android:background="@null">
 
                 <ImageButton
+                    android:id="@+id/img_btn_nav_draw"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:background="@drawable/ic_btn_round_bk"
