@@ -55,7 +55,7 @@ public class FusedHelper {
                             try
                             {
 
-                                saveLocations(locationBatch25,tid,vid);
+                               // saveLocations(locationBatch25,tid,vid);
 
                             }
                             catch (Exception ex)
@@ -79,15 +79,15 @@ public class FusedHelper {
     }//updateLocation
 
 
-    public static void saveLocations(List<Location> locations,String tid, String vid)
+    public static void saveLocations(Location loc,String tid, String vid)
     {
 
         String locality;
-        Location loc = null;
+
         StringBuilder strbuf = new StringBuilder("<ROWSET>" + "\n");
-        for (int i = 0; i < locations.size(); i++)
-        {
-            loc = locations.get(i);
+        //for (int i = 0; i < locations.size(); i++)
+       // {
+
 
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             Calendar cal = Calendar.getInstance();
@@ -99,7 +99,7 @@ public class FusedHelper {
                     "<lon>" + loc.getLongitude() + "</lon>" + "\n" + "<lat>"
                     + loc.getLatitude() + "</lat>"
                    );
-        }
+        //}
 
         Log.d(TAG, "-->Location Async" + strbuf.toString());
         //Call the webservice task here as async

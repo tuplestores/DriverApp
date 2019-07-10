@@ -18,6 +18,7 @@ import com.tuplestores.driverapp.api.ApiInterface;
 import com.tuplestores.driverapp.model.ApiResponse;
 import com.tuplestores.driverapp.model.DriverModel;
 import com.tuplestores.driverapp.utils.ISDUtils;
+import com.tuplestores.driverapp.utils.UtilityFunctions;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -111,9 +112,14 @@ public class DriverVerificationActivity extends AppCompatActivity {
 
                        if( response.body().getVerified()=="Y"){
 
+                           UtilityFunctions.setSharedPreferenceDriver(thisActivity,
+                                   response.body().getDriver_id(),
+                                   response.body().getTenant_id());
+
                            Intent ii = new Intent(thisActivity, VehicleListActivity.class);
                            ii.putExtra("EXTRA_DRIVER_ID",response.body().getDriver_id());
                            ii.putExtra("EXTRA_TENANT_ID",response.body().getTenant_id());
+                           ii.putExtra("EXTRA_VID",response.body().getTenant_id());
                            startActivity(ii);
                            finish();
                        }

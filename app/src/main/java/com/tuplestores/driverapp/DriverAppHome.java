@@ -17,10 +17,12 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.Manifest;
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.app.UiAutomation;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -28,6 +30,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
@@ -61,6 +64,8 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.tuplestores.driverapp.services.LocationFGService;
 import com.tuplestores.driverapp.services.LocationUpdatesBroadcastReceiver;
+import com.tuplestores.driverapp.utils.FusedHelper;
+import com.tuplestores.driverapp.utils.UtilityFunctions;
 
 /*Created By Ajish Dharman on 04-July-2019
  *
@@ -110,6 +115,8 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
     ImageButton img_btn_nav_draw;
 
     private GoogleMap mMap;
+
+    String driver_id,tenant_id,v_id;
 
     /////////////////////////////////Related to Location ////////////////////////////////
 
@@ -162,6 +169,8 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
 
         counter = 1;
         thisActivity = this;
+
+        readPreference();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_driver_home);
 
@@ -581,11 +590,10 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
 
         }
 
-    private  void stopLocationService(){
+     private  void stopLocationService(){
 
         Intent ii = new Intent(this,LocationFGService.class);
         stopService(ii);
-
     }
 
     private void updateMapCamerabyZoom(Location loc){
@@ -603,6 +611,22 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
                     .setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker2));
             mMap.moveCamera(center);
             mMap.animateCamera(zoom);
+
+
+
+               if(UtilityFunctions.getSharedPreference(this)){
+
+                   FusedHelper.saveLocations(loc,UtilityFunctions.tenant_id,UtilityFunctions.v_id);
+
+               }
+               else {
+                   Toast.makeText(this,
+                           getResources().getString(R.string.something_failed),
+                           Toast.LENGTH_SHORT).show();
+                   finish();
+
+               }
+
         }
 
     }
@@ -612,5 +636,23 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
 
         mMap = googleMap;
 
+    }
+
+    private void readPreference(){
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        v_id = sharedPreferences.getString("v_id","");
+        driver_id = sharedPreferences.getString("driver_id","");
+        tenant_id = sharedPreferences.getString("tenant_id","");
+        if(driver_id==null || driver_id.equals("")){
+
+            Toast.makeText(this,
+                    getResources().getString(R.string.something_failed),
+                    Toast.LENGTH_SHORT).show();
+            finish();
+        }
+        UtilityFunctions.driver_id = driver_id;
+        UtilityFunctions.tenant_id = tenant_id;
+        UtilityFunctions.v_id = v_id;
     }
 }//Class
