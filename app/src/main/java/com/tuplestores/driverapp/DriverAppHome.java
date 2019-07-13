@@ -614,7 +614,7 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
 
 
 
-               if(UtilityFunctions.getSharedPreference(this)){
+               if(UtilityFunctions.getSharedPreferenceOfDriver(this)){
 
                    FusedHelper.saveLocations(loc,UtilityFunctions.tenant_id,UtilityFunctions.v_id);
 

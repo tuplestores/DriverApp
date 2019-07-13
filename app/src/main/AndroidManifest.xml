@@ -71,11 +71,11 @@
         <activity
             android:name=".DriverAppHome"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
+            <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
         <activity android:name=".DriverArrivedActivity" />
         <activity
@@ -102,8 +102,17 @@
             </intent-filter>
             -->
         </activity>
-        <activity android:name=".SplashScreenActivity" />
-        <activity android:name=".LauncherActivity"></activity>
+        <activity android:name=".SplashScreenActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".LauncherActivity">
+
+
+        </activity>
     </application>
 
 </manifest>

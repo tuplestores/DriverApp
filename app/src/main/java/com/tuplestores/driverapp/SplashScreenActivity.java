@@ -26,14 +26,16 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-        new Handler().postDelayed(new Runnable() {
+       /*new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
 
                 initialize();
 
             }
-        },SPLASH_TIME);
+        },SPLASH_TIME);*/
+
+       initialize();
     }
 
 
@@ -43,7 +45,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         // Make an autologin and go to dashboard
         //Else go to login screen
 
-        if(UtilityFunctions.getSharedPreference(this)){
+        if(UtilityFunctions.getSharedPreferenceOfDriver(this)){
             Intent ii = new Intent(this, DriverAppHome.class);
             startActivity(ii);
             finish();

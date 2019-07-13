@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1070969797292",
+    "firebase_url": "https://instagaadi-4b08b.firebaseio.com",
+    "project_id": "instagaadi-4b08b",
+    "storage_bucket": "instagaadi-4b08b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1070969797292:android:004b15e3c0dc4084",
+        "android_client_info": {
+          "package_name": "com.tuplestores.driverapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1070969797292-lpa62g4gsb34ap9r3uot4eqlcclfhi3u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBJ9jaTxmcPJiRrP7m33XRUvSmCxCKeHo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1070969797292-lpa62g4gsb34ap9r3uot4eqlcclfhi3u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -18,15 +18,15 @@ import android.preference.PreferenceManager;
      public static String v_id;
      public static final String SHARED_P = "private_shared_peref";
 
-     public static boolean getSharedPreference(Context ctx){
+     public static boolean getSharedPreferenceOfDriver(Context ctx){
 
 
         SharedPreferences sharedPreferences =  ctx.getApplicationContext().getSharedPreferences(SHARED_P,0);
-         v_id = sharedPreferences.getString("v_id","");
+         //v_id = sharedPreferences.getString("v_id","");
          driver_id = sharedPreferences.getString("driver_id","");
          tenant_id = sharedPreferences.getString("tenant_id","");
 
-         if(driver_id!=null && !driver_id.equals("") && v_id!=null && !v_id.equals("")
+         if(driver_id!=null && !driver_id.equals("")
                  && tenant_id!=null && !tenant_id.equals("")){
 
              return true;

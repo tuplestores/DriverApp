@@ -76,7 +76,12 @@ public class DriverVerificationActivity extends AppCompatActivity {
             TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
             String countryCodeValue = tm.getNetworkCountryIso();
 
-            edtisdCode.setText(ISDUtils.getISDCode(countryCodeValue));
+           // edtisdCode.setText(ISDUtils.getISDCode(countryCodeValue));
+
+            //Test values
+            edtisdCode.setText("91");
+            edtmobileNumber.setText("9876534567");
+            edtinviteCode.setText("2346");
             thisActivity = this;
         }
         catch(Exception ex){
@@ -112,10 +117,12 @@ public class DriverVerificationActivity extends AppCompatActivity {
 
                        if( response.body().getVerified()=="Y"){
 
+                           //Save the driver id and tenant id in preference
                            UtilityFunctions.setSharedPreferenceDriver(thisActivity,
                                    response.body().getDriver_id(),
                                    response.body().getTenant_id());
 
+                           //Invode vehicle  List for driver check in
                            Intent ii = new Intent(thisActivity, VehicleListActivity.class);
                            ii.putExtra("EXTRA_DRIVER_ID",response.body().getDriver_id());
                            ii.putExtra("EXTRA_TENANT_ID",response.body().getTenant_id());
