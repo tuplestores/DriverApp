@@ -6,6 +6,7 @@ package com.tuplestores.driverapp;
 
 import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
@@ -13,6 +14,9 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import android.Manifest;
 import android.app.Activity;
@@ -20,6 +24,7 @@ import android.app.PendingIntent;
 import android.app.UiAutomation;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -62,6 +67,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.tuplestores.driverapp.api.ApiClient;
+import com.tuplestores.driverapp.api.ApiInterface;
+import com.tuplestores.driverapp.model.ApiResponse;
+import com.tuplestores.driverapp.model.DriverModel;
 import com.tuplestores.driverapp.services.LocationFGService;
 import com.tuplestores.driverapp.services.LocationUpdatesBroadcastReceiver;
 import com.tuplestores.driverapp.utils.FusedHelper;
@@ -170,7 +179,11 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
         counter = 1;
         thisActivity = this;
 
-        readPreference();
+        if(!UtilityFunctions.getSharedPreferenceOfDriver(this)){
+
+            ShowAlert(this,"",getResources().getString(R.string.something_failed));
+
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_driver_home);
 
@@ -288,6 +301,8 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
                 }
             }
         };
+
+
 
     }
 
@@ -543,9 +558,16 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
             // Handle the camera action
         } else if (id == R.id.nav_detach_vehicle) {
 
+            detachVehicle(false);
+
         } else if (id == R.id.nav_sign_out) {
+            detachVehicle(true);
+
 
         } else if (id == R.id.nav_profile) {
+
+            Intent ii = new Intent(this,DriverProfileActivity.class);
+            this.startActivity(ii);
 
         }
 
@@ -554,6 +576,66 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_driver_home);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void singOut(){
+
+        //Clear Preferene values for driver/tentant and vehicle attached
+        //Call api to driver un verified
+        //Call API to detach
+        try {
+            UtilityFunctions.clearAllPreferenceValues(this);
+            Intent ii = new Intent(this, DriverVerificationActivity.class);
+            startActivity(ii);
+        }
+        catch(Exception ex){
+
+
+        }
+    }
+
+    private void detachVehicle(final boolean signout){
+
+        ApiInterface apiService =
+                ApiClient.getClient().create(ApiInterface.class);
+
+        Call<ApiResponse> call = apiService.dettachVehicle(UtilityFunctions.tenant_id,UtilityFunctions.driver_id);
+
+        call.enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+
+                if(response.body()!=null){
+
+                    if(response.body().getStatus().trim().equals("S")){
+
+                        if(signout){
+                            singOut();
+                        }
+                        else {
+                            ShowAlert(thisActivity, "", getResources().getString(R.string.dettach_success));
+                        }
+                    }
+
+
+                }
+                else  if(response.body()==null){
+
+                    ShowAlert(thisActivity,"",getResources().getString(R.string.something_failed));
+
+
+                }
+            }//OnResponse
+
+            @Override
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+
+                //Something went wrong
+                ShowAlert(thisActivity,"",getResources().getString(R.string.something_failed));
+
+            }
+        });
+
     }
 
 
@@ -614,7 +696,9 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
 
 
 
-               if(UtilityFunctions.getSharedPreferenceOfDriver(this)){
+               if(UtilityFunctions.getAllSharedPrefValues(this)){
+
+                   FusedHelper.ctx = this;//Activity
 
                    FusedHelper.saveLocations(loc,UtilityFunctions.tenant_id,UtilityFunctions.v_id);
 
@@ -638,21 +722,23 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
 
     }
 
-    private void readPreference(){
+     private void ShowAlert(Context ctx, String focus, String msg){
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        v_id = sharedPreferences.getString("v_id","");
-        driver_id = sharedPreferences.getString("driver_id","");
-        tenant_id = sharedPreferences.getString("tenant_id","");
-        if(driver_id==null || driver_id.equals("")){
+        androidx.appcompat.app.AlertDialog.Builder dlg = null;
 
-            Toast.makeText(this,
-                    getResources().getString(R.string.something_failed),
-                    Toast.LENGTH_SHORT).show();
-            finish();
+            dlg =   new AlertDialog.Builder(ctx,R.style.AlertDialogTheme)
+                    .setTitle("")
+                    .setMessage(msg)
+
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                           finish();
+                        }
+                    });
         }
-        UtilityFunctions.driver_id = driver_id;
-        UtilityFunctions.tenant_id = tenant_id;
-        UtilityFunctions.v_id = v_id;
-    }
+
+
 }//Class

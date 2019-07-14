@@ -81,7 +81,8 @@
         <activity
             android:name=".TripRequestActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".DriverProfileActivity" />
+        <activity android:name=".DriverProfileActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".TripsListActivity" />
         <activity android:name=".DriverProfileEditActivity" />
 
@@ -102,7 +103,8 @@
             </intent-filter>
             -->
         </activity>
-        <activity android:name=".SplashScreenActivity" >
+        <activity android:name=".SplashScreenActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

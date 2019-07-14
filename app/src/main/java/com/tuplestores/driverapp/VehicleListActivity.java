@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.google.android.gms.common.util.SharedPreferencesUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -20,6 +21,7 @@ import com.tuplestores.driverapp.api.ApiInterface;
 import com.tuplestores.driverapp.model.ApiResponse;
 import com.tuplestores.driverapp.model.VehicleModel;
 import com.tuplestores.driverapp.modeladapter.VehicleListAdapter;
+import com.tuplestores.driverapp.utils.UtilityFunctions;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
@@ -50,8 +52,8 @@ import static com.here.android.mpa.internal.r.h;
 public class VehicleListActivity extends AppCompatActivity {
 
     List<VehicleModel> lstVehicle = null;
-    String driverId;
-    String tenantId;
+   // String driverId;
+   // String tenantId;
 
     ListView lvVehicle;
     VehicleListAdapter vadpater;
@@ -74,8 +76,8 @@ public class VehicleListActivity extends AppCompatActivity {
 
     private void Initialize(){
 
-        driverId = this.getIntent().getStringExtra("DRIVER_ID");
-        tenantId = this.getIntent().getStringExtra("TENANT_ID");
+       // driverId = this.getIntent().getStringExtra("DRIVER_ID");
+       // tenantId = this.getIntent().getStringExtra("TENANT_ID");
 
         linlayrootPanel = (LinearLayout)findViewById(R.id.linlayrootPanel) ;
         pgBar = (ProgressBar) findViewById(R.id.pgBar);
@@ -93,19 +95,36 @@ public class VehicleListActivity extends AppCompatActivity {
             }
         });
 
+        ctx = this;
         lstVehicle = new ArrayList<VehicleModel>();
+
+        final boolean isdriverTenantSet;
+
+        isdriverTenantSet = UtilityFunctions.getSharedPreferenceOfDriver(this);
 
         lvVehicle.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
                 VehicleModel vm = (VehicleModel) parent.getAdapter().getItem(position);
-                //Call Attach API
-                doDriverChekIn(vm.getVehicle_id(),vm.getPlate_number(),driverId,tenantId);
+                if(vm!=null) {
+                    if (isdriverTenantSet) {
+                        //Call Attach API
+                        doDriverChekIn(vm.getVehicle_id(), vm.getPlate_number(), UtilityFunctions.driver_id, UtilityFunctions.tenant_id);
+                    } else {
+
+                        ShowAlert(ctx, "", getResources().getString(R.string.problem_help));
+                    }
+                }
+                else{
+                    ShowAlert(ctx, "", getResources().getString(R.string.problem_help));
+                }
             }
         });
 
-        fillVehicleList();
+       if (isdriverTenantSet){
+            fillVehicleList();
+        }
     }
 
     private void fillVehicleList(){
@@ -113,7 +132,7 @@ public class VehicleListActivity extends AppCompatActivity {
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
 
-        Call<List<VehicleModel>> call = apiService.getvehiclelist("");
+        Call<List<VehicleModel>> call = apiService.getvehiclelist(UtilityFunctions.tenant_id);
 
         call.enqueue(new Callback<List<VehicleModel>>() {
             @Override
@@ -146,7 +165,7 @@ public class VehicleListActivity extends AppCompatActivity {
         });
     }
 
-    private void doDriverChekIn(String vehicleId, final String vPlate, String driverId, String tenantId){
+    private void doDriverChekIn(final String vehicleId, final String vPlate, String driverId, String tenantId){
 
         //Call the API
         final ApiInterface apiService =
@@ -163,15 +182,21 @@ public class VehicleListActivity extends AppCompatActivity {
                 if(response.body()!=null){
 
                     ApiResponse api = response.body();
-                    if(api.getStatus() == "Y"){
+                    if(api.getStatus().trim().equals("S")){
 
-                        ShowAlertAfterCheckin(getBaseContext(),"S",vPlate);
+                        UtilityFunctions.setSharedPreferenceVehicle(ctx,vehicleId);
+
+                        ShowAlertAfterCheckin(ctx,"S",vPlate);
+                    }
+                    else {
+
+                        ShowAlert(ctx,"",getResources().getString(R.string.problem_help_vattach));
                     }
 
                 }
                 else  if(response.body()==null){
 
-                    ShowAlertAfterCheckin(getBaseContext(),"F",vPlate);
+                    ShowAlertAfterCheckin(ctx,"F",vPlate);
 
                 }
             }//OnResponse
@@ -262,7 +287,7 @@ public class VehicleListActivity extends AppCompatActivity {
         if(focus == "S") {
             dlg = new AlertDialog.Builder(ctx, R.style.AlertDialogTheme)
                     .setTitle("")
-                    .setMessage(getResources().getString(R.string.check_in_success) +" "+
+                    .setMessage(
                             getResources().getString(R.string.check_in_success) +" " +vPlate)
 
                     // Specifying a listener allows you to take an action before dismissing the dialog.

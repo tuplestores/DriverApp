@@ -13,6 +13,10 @@ import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.internal.LinkedTreeMap;
 import com.tuplestores.driverapp.api.ApiClient;
 import com.tuplestores.driverapp.api.ApiInterface;
 import com.tuplestores.driverapp.model.ApiResponse;
@@ -33,6 +37,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -113,37 +118,36 @@ public class DriverVerificationActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<DriverModel> call, Response<DriverModel> response) {
 
-                    if(response.body()!=null){
+                    if(response.body()!=null) {
 
-                       if( response.body().getVerified()=="Y"){
+                        if(response.body().getStatus().equals("Y")) {
 
-                           //Save the driver id and tenant id in preference
-                           UtilityFunctions.setSharedPreferenceDriver(thisActivity,
-                                   response.body().getDriver_id(),
-                                   response.body().getTenant_id());
+                            UtilityFunctions.setSharedPreferenceDriver(thisActivity,
+                                    response.body().getDriver_id(),
+                                    response.body().getTenant_id());
 
-                           //Invode vehicle  List for driver check in
-                           Intent ii = new Intent(thisActivity, VehicleListActivity.class);
-                           ii.putExtra("EXTRA_DRIVER_ID",response.body().getDriver_id());
-                           ii.putExtra("EXTRA_TENANT_ID",response.body().getTenant_id());
-                           ii.putExtra("EXTRA_VID",response.body().getTenant_id());
-                           startActivity(ii);
-                           finish();
-                       }
-                       else if(response.body().getVerified()=="N"){
-
-                           //Alert Dialog;
-                           ShowAlert(thisActivity,"DV",
-                                   getResources().getString(R.string.verify_failed));
-                       }
-
+                            //Invode vehicle  List for driver check in
+                            Intent ii = new Intent(thisActivity, VehicleListActivity.class);
+                            ii.putExtra("EXTRA_DRIVER_ID",response.body().getDriver_id());
+                            ii.putExtra("EXTRA_TENANT_ID",response.body().getTenant_id());
+                            ii.putExtra("EXTRA_VID",response.body().getTenant_id());
+                             startActivity(ii);
+                            finish();
+                        }else if(response.body().getStatus().equals("N")) {
+                            //Alert Dialog;
+                            ShowAlert(thisActivity,"DV",
+                                    getResources().getString(R.string.verify_failed));
+                        }
                     }
-                    else  if(response.body()==null){
+                    else {
+
                         ShowAlert(thisActivity,"DV",
-                                getResources().getString(R.string.verify_failed));
+                                getResources().getString(R.string.something_failed));
 
                     }
-                }//OnResponse
+
+
+                }//OnResponse*/
 
                 @Override
                 public void onFailure(Call<DriverModel> call, Throwable t) {

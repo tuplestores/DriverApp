@@ -26,6 +26,7 @@ import com.tuplestores.driverapp.api.ApiInterface;
 import com.tuplestores.driverapp.model.DriverModel;
 import com.tuplestores.driverapp.model.VehicleModel;
 import com.tuplestores.driverapp.modeladapter.VehicleListAdapter;
+import com.tuplestores.driverapp.utils.UtilityFunctions;
 
 import org.w3c.dom.Text;
 
@@ -50,8 +51,7 @@ public class DriverProfileActivity extends AppCompatActivity {
 
     private void initialize(){
 
-        driverId = this.getIntent().getStringExtra("DRIVER_ID");
-        tenantId = this.getIntent().getStringExtra("TENANT_ID");
+
 
         TextView tv_mob= (TextView) (findViewById(R.id.tv_mob));
         TextView tv_email= (TextView) (findViewById(R.id.tv_email));
@@ -73,15 +73,26 @@ public class DriverProfileActivity extends AppCompatActivity {
 
         ctx = this;
 
+        if(UtilityFunctions.getAllSharedPrefValues(ctx)){
+            fillDriverDetails();
+        }
+        else{
+
+            ShowAlert(ctx,getResources().getString(R.string.something_failed));
+
+        }
+
+
+
     }//initialize()
 
 
-    private void fillDriverDetails(String driverId,String tenantId){
+    private void fillDriverDetails(){
 
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
 
-        Call<DriverModel> call = apiService.getDriver(tenantId,driverId);
+        Call<DriverModel> call = apiService.getDriverProfile(UtilityFunctions.tenant_id,UtilityFunctions.driver_id);
 
         call.enqueue(new Callback<DriverModel>() {
             @Override

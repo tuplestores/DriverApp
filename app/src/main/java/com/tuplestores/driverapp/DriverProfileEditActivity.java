@@ -106,7 +106,7 @@ public class DriverProfileEditActivity extends AppCompatActivity  {
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
 
-        Call<ApiResponse> call = apiService.updateDriver(tenantId,driverId,edt_name.getText().toString(),
+        Call<ApiResponse> call = apiService.updateDriverProfile(tenantId,driverId,edt_name.getText().toString(),
                                                             edt_isd.getText().toString(),
                                                          edt_mob.getText().toString(),edt_email.getText().toString());
 

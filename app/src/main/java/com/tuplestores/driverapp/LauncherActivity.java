@@ -51,7 +51,7 @@ public class LauncherActivity extends AppCompatActivity {
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
 
-        Call<DriverModel> call = apiService.getDriver(tenantId,driverId);
+        Call<DriverModel> call = apiService.getDriverProfile(tenantId,driverId);
 
         call.enqueue(new Callback<DriverModel>() {
             @Override

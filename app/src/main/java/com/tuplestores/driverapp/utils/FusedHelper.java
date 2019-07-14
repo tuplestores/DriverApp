@@ -4,8 +4,10 @@
 
 package com.tuplestores.driverapp.utils;
 
+import android.content.Context;
 import android.location.Location;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.tuplestores.driverapp.R;
 import com.tuplestores.driverapp.api.ApiClient;
@@ -32,6 +34,7 @@ import retrofit2.Response;
 public class FusedHelper {
 
     static final String TAG = "FusedHelper";
+    public static Context ctx;
 
       public static void updateLocation(List<Location> locations,String vid, String tid) {
 
@@ -84,67 +87,80 @@ public class FusedHelper {
 
         String locality;
 
-        StringBuilder strbuf = new StringBuilder("<ROWSET>" + "\n");
+        StringBuilder strbuf = new StringBuilder("");
         //for (int i = 0; i < locations.size(); i++)
        // {
 
+            try {
+                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                Calendar cal = Calendar.getInstance();
+                String dt = dateFormat.format(cal.getTime());
 
-            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            Calendar cal = Calendar.getInstance();
-            String dt = dateFormat.format(cal); //2016/11/16 12:08:43
+                strbuf.append("<tid>" + tid + "</tid>" + "\n"
+                        + "<vid>" + vid + "</vid>" + "\n" +
+                        "<dt>" + dt + "</dt>" + "\n" +
+                        "<lon>" + loc.getLongitude() + "</lon>" + "\n" + "<lat>"
+                        + loc.getLatitude() + "</lat>"
+                );
+                //}
 
-            strbuf.append( "<tid>" + tid + "</tid>" + "\n"
-                    + "<vid>" + vid + "</vid>" + "\n" +
-                    "<dt>"+dt+"</dt>"+"\n"+
-                    "<lon>" + loc.getLongitude() + "</lon>" + "\n" + "<lat>"
-                    + loc.getLatitude() + "</lat>"
-                   );
-        //}
+            }
+
+            catch (Exception ex){
+
+                Log.d(TAG, "-->Location Async" + ex.getMessage());
+            }
 
         Log.d(TAG, "-->Location Async" + strbuf.toString());
         //Call the webservice task here as async
         try
         {
-            ApiInterface apiService =
-                    ApiClient.getClient().create(ApiInterface.class);
+            if(strbuf!= null || !strbuf.toString().equals("")) {
+                ApiInterface apiService =
+                        ApiClient.getClient().create(ApiInterface.class);
 
-            Call<ApiResponse> call = apiService.transformDeviceData(strbuf.toString());
+                Call<ApiResponse> call = apiService.loadDeviceData(strbuf.toString());
 
-            call.enqueue(new Callback<ApiResponse>() {
-                @Override
-                public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                call.enqueue(new Callback<ApiResponse>() {
+                    @Override
+                    public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
 
-                    if(response.body()!=null){
+                        if (response.body() != null) {
 
-                        ApiResponse api = response.body();
-                        if(api.getStatus() == "Y"){
+                            ApiResponse api = response.body();
+                            if (api.getStatus().trim().equals("S")) {
 
-                            Log.d(TAG, "-->Save Location Success" );
+                                Log.d(TAG, "-->Save Location Success");
+                            }
+
+                        } else if (response.body() == null) {
+
+                            Log.d(TAG, "-->Save Location Failed");
+
                         }
+                    }//OnResponse
+
+                    @Override
+                    public void onFailure(Call<ApiResponse> call, Throwable t) {
+
+                        //Something went wrong
+                        Log.d(TAG, "-->Save Location Failed " + t.getLocalizedMessage());
 
                     }
-                    else  if(response.body()==null){
+                });
 
-                        Log.d(TAG, "-->Save Location Failed" );
+            }
+            else {
 
-                    }
-                }//OnResponse
-
-                @Override
-                public void onFailure(Call<ApiResponse> call, Throwable t) {
-
-                    //Something went wrong
-                    Log.d(TAG, "-->Save Location Failed "+ t.getLocalizedMessage() );
-
-                }
-            });
+                Toast.makeText(ctx,ctx.getResources().getString(R.string.something_failed),Toast.LENGTH_SHORT).show();
+            }
 
 
 
         }
         catch (Exception ex)
         {
-
+            Log.d(TAG, "-->Save Location Failed "+ex.getLocalizedMessage() );
         }
     }//SaveLocations
 
