@@ -164,10 +164,20 @@
             android:layout_below="@id/linlay_inputbox2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:gravity="center"
             android:layout_marginTop="20dp"
             android:padding="15dp">
+            <ProgressBar
+                android:id="@+id/pgBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:max="100"
+                android:backgroundTint="@color/colorTextRed"
+                android:indeterminateTint="@color/colorTextBlue"
+                android:layout_marginTop="-3dp"/>
 
             <Button
                 android:id="@+id/btnSignin"

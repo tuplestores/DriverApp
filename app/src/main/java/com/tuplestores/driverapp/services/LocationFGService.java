@@ -23,6 +23,7 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.tuplestores.driverapp.utils.Constants;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -73,9 +74,6 @@ public class LocationFGService extends Service {
 
     LocalBroadcastManager broadcaster;
 
-    static final public String TAXI_DISPATCH_LBS = "com.tuplestores.dispatch.LBS_PROCESSED";
-
-    static final public String TAXI_DISPATCH_LBS_MSG = "com.tuplestores.dispatch.LBS_PROCESSED_MSG";
 
     public LocationFGService() {
     }
@@ -161,9 +159,9 @@ public class LocationFGService extends Service {
     }
 
     public void sendResult(Location loc) {
-        Intent intent = new Intent(TAXI_DISPATCH_LBS);
+        Intent intent = new Intent(Constants.ACTION_TAXI_DISPATCH_LBS);
         if(loc != null)
-            intent.putExtra(TAXI_DISPATCH_LBS_MSG, loc);
+            intent.putExtra(Constants.EXTRA_TAXI_DISPATCH_LBS_MSG, loc);
         broadcaster.sendBroadcast(intent);
     }
 

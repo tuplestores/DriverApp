@@ -67,12 +67,16 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.tuplestores.driverapp.api.ApiClient;
 import com.tuplestores.driverapp.api.ApiInterface;
 import com.tuplestores.driverapp.model.ApiResponse;
 import com.tuplestores.driverapp.model.DriverModel;
+import com.tuplestores.driverapp.model.TripRequest;
 import com.tuplestores.driverapp.services.LocationFGService;
 import com.tuplestores.driverapp.services.LocationUpdatesBroadcastReceiver;
+import com.tuplestores.driverapp.utils.Constants;
 import com.tuplestores.driverapp.utils.FusedHelper;
 import com.tuplestores.driverapp.utils.UtilityFunctions;
 
@@ -117,11 +121,15 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
     TextView tv_drop_bubble_km;
     TextView tv_drop_bubble_min;
     TextView tv_picup_location;
+    TextView txtRidername;
     Button btnAccept;
     Button btnDecline;
     Activity thisActivity;
     SwitchCompat btnswith;
     ImageButton img_btn_nav_draw;
+    ProgressBar pgBr;
+    boolean driverAction = false;
+
 
     private GoogleMap mMap;
 
@@ -155,6 +163,8 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
             requestPermissions();
         }
 
+        getFirebaseTocken();
+
     }
 
     private void Initialize(){
@@ -171,10 +181,14 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
         tv_drop_bubble_km = (TextView) findViewById(R.id.tv_drop_bubble_km);
         tv_drop_bubble_min  = (TextView) findViewById(R.id.tv_drop_bubble_min);
         tv_picup_location = (TextView) findViewById(R.id.tv_picup_location);
+        txtRidername = (TextView) findViewById(R.id.txtRidername);
         btnAccept = (Button)findViewById(R.id.btnAccept);
         btnDecline = (Button)findViewById(R.id.btnDecline);
         btnswith = (SwitchCompat) (findViewById(R.id.btnswith));
         img_btn_nav_draw = (ImageButton) findViewById(R.id.img_btn_nav_draw);
+
+        pgBr = (ProgressBar) findViewById(R.id.pgBar);
+        pgBr.setVisibility(View.GONE);
 
         counter = 1;
         thisActivity = this;
@@ -192,9 +206,7 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        Animation an = new RotateAnimation(0.0f, 90.0f, 80f, 80f);
-        an.setFillAfter(true);
-        pgBarCountDown.startAnimation(an);
+
 
 
 
@@ -204,12 +216,18 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
             @Override
             public void onClick(View v) {
 
+
+                //Show a progressBar
+                acceptRideRq(UtilityFunctions.ride_req_id);
+
             }
         });
 
         btnDecline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                declineRideRq(UtilityFunctions.ride_req_id);
 
             }
         });
@@ -226,7 +244,7 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
             }
         });
 
-        startTimer();
+
 
         btnHome.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -248,15 +266,15 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
                  if(v.getId() == R.id.btnTrips){
                     toggleButtonState("TRIPS");
                     //Do the stuff for Trips
-                    //Intent ii = new Intent(thisActivity,TripsListActivity.class);
-                    //startActivity(ii);
+                    Intent ii = new Intent(thisActivity,TripsListActivity.class);
+                    startActivity(ii);
                     //thisActivity.finish();
                 } else if (v.getId() == R.id.btnProfile){
 
                     toggleButtonState("PROFILE");
                     Intent ii = new Intent(thisActivity,DriverProfileActivity.class);
                     startActivity(ii);
-                    thisActivity.finish();
+                   // thisActivity.finish();
 
                 }
             }
@@ -270,7 +288,7 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
                     toggleButtonState("PROFILE");
                     Intent ii = new Intent(thisActivity,DriverProfileActivity.class);
                     startActivity(ii);
-                    thisActivity.finish();
+
 
                 }
             }
@@ -294,16 +312,84 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-               Location loc  = intent.getExtras().getParcelable(LocationFGService.TAXI_DISPATCH_LBS_MSG);
-                //Zoom to that location in map
-                if(loc!=null) {
-                    updateMapCamerabyZoom(loc);
+                    if(intent.getAction().equals(Constants.ACTION_TAXI_DISPATCH_FIREBASE_TRIP_R)){
+
+                        String s = intent.getStringExtra(Constants.EXTRA_TAXI_DISPATCH_FIREBASE_TRIP_M);
+                        if(s!=null && !s.equals("")){
+                            //Show Ride request popup
+
+                            startCountDownPopUp();
+                        }
+
+                    }
+                    else if(intent.getAction().equals(Constants.ACTION_TAXI_DISPATCH_LBS)){
+
+                        Location loc = intent.getExtras().getParcelable(Constants.EXTRA_TAXI_DISPATCH_LBS_MSG);
+                        //Zoom to that location in map
+                        if (loc != null) {
+                            updateMapCamerabyZoom(loc);
+                        }
+
+                    }
+
                 }
+        };//Receiver
+
+    }
+
+    private void startCountDownPopUp(){
+
+        pgBr.setVisibility(View.VISIBLE);
+
+        ApiInterface apiService =
+                ApiClient.getClient().create(ApiInterface.class);
+
+        Call<TripRequest> call = apiService.getRiderRequest(UtilityFunctions.tenant_id,UtilityFunctions.v_id);
+
+        call.enqueue(new Callback<TripRequest>() {
+            @Override
+            public void onResponse(Call<TripRequest> call, Response<TripRequest> response) {
+
+                pgBr.setVisibility(View.GONE);
+
+                if(response.body()!=null){
+
+                    fillTripRequestPopUp(response.body());
+
+                }
+                else  if(response.body()==null){
+
+                    ShowAlert(thisActivity,"",getResources().getString(R.string.something_failed));
+
+
+                }
+            }//OnResponse
+
+            @Override
+            public void onFailure(Call<TripRequest> call, Throwable t) {
+
+                //Something went wrong
+                ShowAlert(thisActivity,"",getResources().getString(R.string.something_failed));
+
             }
-        };
+        });
 
 
 
+
+    }
+
+    private void fillTripRequestPopUp(TripRequest tr){
+
+        txtRidername.setText(tr.getRider_full_name());
+        tv_picup_location.setText(tr.getPick_up_location_text());
+        UtilityFunctions.ride_req_id = tr.getRide_request_id();
+        counter = 1;
+        llinlay_triprequest_popup.setVisibility(View.VISIBLE);
+        startTimer();
+        Animation an = new RotateAnimation(0.0f, 90.0f, 80f, 80f);
+        an.setFillAfter(true);
+        pgBarCountDown.startAnimation(an);
     }
 
 
@@ -339,6 +425,10 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
 
                     countDownTimer.cancel();
                     llinlay_triprequest_popup.setVisibility(View.GONE);
+                    if(driverAction==false){
+
+                        cancelRideRq(UtilityFunctions.ride_req_id);
+                    }
 
                 }
             }
@@ -545,6 +635,8 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
         if(permissionGranted==false){
             requestPermissions();
         }
+
+        UtilityFunctions.currentActivity="HOME";
         super.onResume();
     }
 
@@ -651,9 +743,17 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
 
     @Override
     protected void onStart() {
+        IntentFilter inf = new IntentFilter();
+        inf.addAction(Constants.ACTION_TAXI_DISPATCH_LBS);
+        inf.addAction(Constants.ACTION_TAXI_DISPATCH_FIREBASE_TRIP_R);
+        /*LocalBroadcastManager.getInstance(this).registerReceiver((receiver),
+                new IntentFilter(Constants.ACTION_TAXI_DISPATCH_LBS)
+        );*/
+
         LocalBroadcastManager.getInstance(this).registerReceiver((receiver),
-                new IntentFilter(LocationFGService.TAXI_DISPATCH_LBS)
+                inf
         );
+
         super.onStart();
     }
 
@@ -739,6 +839,183 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
                         }
                     });
         }
+
+
+        //Firebase//////////
+
+    private void getFirebaseTocken(){
+
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+
+                        // Log and toast
+
+                        Log.d(TAG, "Tocken==="+token);
+
+                    }
+                });
+
+    }
+
+    private void acceptRideRq(String ridereq){
+
+        driverAction = true;
+        countDownTimer.cancel();
+        counter =1;
+        llinlay_triprequest_popup.setVisibility(View.GONE);
+
+
+        if(ridereq==null || ridereq.equals("")){
+            return;
+        }
+        pgBr.setVisibility(View.VISIBLE);
+        ApiInterface apiService =
+                ApiClient.getClient().create(ApiInterface.class);
+
+        Call<ApiResponse> call = apiService.acceptRideRequest(UtilityFunctions.tenant_id,
+                ridereq,UtilityFunctions.v_id,UtilityFunctions.driver_id);
+
+        call.enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+
+                pgBr.setVisibility(View.GONE);
+                if(response.body()!=null){
+
+                    if(response.body().getStatus().trim().equals("S")){
+
+                        ShowAlert(thisActivity, "", getResources().getString(R.string.ride_requeted_accepted));
+                    }
+
+
+                }
+                else  if(response.body()==null){
+
+                    ShowAlert(thisActivity,"",getResources().getString(R.string.something_failed));
+
+
+                }
+            }//OnResponse
+
+            @Override
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+
+                //Something went wrong
+                ShowAlert(thisActivity,"",getResources().getString(R.string.something_failed));
+
+            }
+        });
+
+
+    }
+
+    private  void declineRideRq(String ridereq){
+
+        driverAction = true;
+        countDownTimer.cancel();
+        counter =1;
+        llinlay_triprequest_popup.setVisibility(View.GONE);
+        if(ridereq==null || ridereq.equals("")){
+            return;
+        }
+        pgBr.setVisibility(View.VISIBLE);
+        ApiInterface apiService =
+                ApiClient.getClient().create(ApiInterface.class);
+
+        Call<ApiResponse> call = apiService.declineRideRequest(UtilityFunctions.tenant_id,
+                ridereq,UtilityFunctions.v_id);
+
+        call.enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+
+                pgBr.setVisibility(View.GONE);
+
+                if(response.body()!=null){
+
+                    if(response.body().getStatus().trim().equals("S")){
+
+                        ShowAlert(thisActivity, "", getResources().getString(R.string.ride_requeted_rejected));
+                    }
+
+
+                }
+                else  if(response.body()==null){
+
+                    ShowAlert(thisActivity,"",getResources().getString(R.string.something_failed));
+
+
+                }
+            }//OnResponse
+
+            @Override
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+
+                //Something went wrong
+                ShowAlert(thisActivity,"",getResources().getString(R.string.something_failed));
+
+            }
+        });
+
+
+    }
+
+    private void cancelRideRq(String ridereq){
+
+        if(ridereq==null || ridereq.equals("")){
+            return;
+        }
+
+        pgBr.setVisibility(View.VISIBLE);
+
+        ApiInterface apiService =
+                ApiClient.getClient().create(ApiInterface.class);
+
+        Call<ApiResponse> call = apiService.cancelRideRequest(UtilityFunctions.tenant_id,
+                ridereq,UtilityFunctions.v_id,UtilityFunctions.driver_id);
+
+        call.enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+
+                pgBr.setVisibility(View.GONE);
+                if(response.body()!=null){
+
+                    if(response.body().getStatus().trim().equals("S")){
+
+                        ShowAlert(thisActivity, "", getResources().getString(R.string.ride_requeted_cancelled));
+                    }
+
+
+                }
+                else  if(response.body()==null){
+
+                    ShowAlert(thisActivity,"",getResources().getString(R.string.something_failed));
+
+
+                }
+            }//OnResponse
+
+            @Override
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+
+                //Something went wrong
+                ShowAlert(thisActivity,"",getResources().getString(R.string.something_failed));
+
+            }
+        });
+
+
+    }
 
 
 }//Class

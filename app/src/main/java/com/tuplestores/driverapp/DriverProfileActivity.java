@@ -6,6 +6,7 @@ package com.tuplestores.driverapp;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.appcompat.widget.Toolbar;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -14,11 +15,13 @@ import retrofit2.Response;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tuplestores.driverapp.api.ApiClient;
@@ -27,6 +30,8 @@ import com.tuplestores.driverapp.model.DriverModel;
 import com.tuplestores.driverapp.model.VehicleModel;
 import com.tuplestores.driverapp.modeladapter.VehicleListAdapter;
 import com.tuplestores.driverapp.utils.UtilityFunctions;
+
+
 
 import org.w3c.dom.Text;
 
@@ -41,40 +46,44 @@ public class DriverProfileActivity extends AppCompatActivity {
    TextView tv_email;
    TextView tv_name;
    Context ctx;
+   ProgressBar pg;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_profile);
+        initialize();
 
 
     }
 
     private void initialize(){
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_black);
+        toolbar.setTitle("My Profile");
 
+        setSupportActionBar(toolbar);
 
         TextView tv_mob= (TextView) (findViewById(R.id.tv_mob));
         TextView tv_email= (TextView) (findViewById(R.id.tv_email));
         TextView tv_name =  (TextView) (findViewById(R.id.tv_name));
+        pg = (ProgressBar)findViewById(R.id.pgBar) ;
 
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+
+                finish();
             }
         });
+
+
 
         ctx = this;
 
         if(UtilityFunctions.getAllSharedPrefValues(ctx)){
-            fillDriverDetails();
+           // fillDriverDetails();
         }
         else{
 
@@ -98,6 +107,7 @@ public class DriverProfileActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<DriverModel> call, Response<DriverModel> response) {
 
+                pg.setVisibility(View.INVISIBLE);
                 if(response.body()!=null){
 
                     DriverModel dm = response.body();
@@ -112,7 +122,7 @@ public class DriverProfileActivity extends AppCompatActivity {
                 else  if(response.body()==null){
 
                     //Show Blank template;
-
+                    ShowAlert(ctx,getResources().getString(R.string.something_failed));
 
                 }
             }//OnResponse
@@ -176,7 +186,7 @@ public class DriverProfileActivity extends AppCompatActivity {
 
     private void startProfileEdit(){
 
-        String name = tv_name.getText().toString();
+       /* String name = tv_name.getText().toString();
         String isd = tv_mob.getText().toString().substring(0,1);
         String mobile = tv_mob.getText().toString();
         String email = tv_email.getText().toString();
@@ -188,10 +198,15 @@ public class DriverProfileActivity extends AppCompatActivity {
 
         ii.putExtra("DRIVER_ID",driverId);
 
-        ii.putExtra("TENANT_ID",tenantId);
+        ii.putExtra("TENANT_ID",tenantId);*/
 
-
+        Intent ii = new Intent(this,DriverProfileEditActivity.class);
         this.startActivity(ii);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }

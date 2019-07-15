@@ -255,7 +255,7 @@
                                         android:layout_centerInParent="true"
                                         android:layout_marginTop="-2dp"
                                         android:textColor="#363636"
-                                        android:text="Kootallkkad a junctinn point "/>
+                                        android:text="Medical college junction "/>
                                 </RelativeLayout>
                                 <RelativeLayout
                                     android:layout_width="match_parent"
@@ -335,6 +335,7 @@
 
 
             <LinearLayout
+                android:id="@+id/linlay_humburger"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -373,7 +374,17 @@
                     android:layout_marginLeft="120dp"
                     app:civ_border_color="#ffffffff"/>
             </LinearLayout>
-
+            <ProgressBar
+                android:id="@+id/pgBar"
+                android:layout_below="@id/linlay_humburger"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:max="100"
+                android:backgroundTint="@color/colorTextRed"
+                android:indeterminateTint="@color/colorTextBlue"
+                android:layout_marginTop="-3dp"/>
 
 
         </RelativeLayout>

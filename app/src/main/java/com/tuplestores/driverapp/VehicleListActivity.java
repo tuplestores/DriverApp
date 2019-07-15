@@ -84,9 +84,11 @@ public class VehicleListActivity extends AppCompatActivity {
         pgBar.setVisibility(View.GONE);
         lvVehicle = (ListView) findViewById(R.id.lvVehicles);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Select your vehicle");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_black);
         ctx = this;
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

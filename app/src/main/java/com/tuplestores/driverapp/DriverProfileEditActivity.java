@@ -54,7 +54,7 @@ public class DriverProfileEditActivity extends AppCompatActivity  {
 
          ctx = this;
 
-        driverId = this.getIntent().getStringExtra("DRIVER_ID");
+       /* driverId = this.getIntent().getStringExtra("DRIVER_ID");
         tenantId = this.getIntent().getStringExtra("TENANT_ID");
 
         email =  this.getIntent().getStringExtra("EMAIL");
@@ -67,13 +67,14 @@ public class DriverProfileEditActivity extends AppCompatActivity  {
         edt_mob= (EditText)findViewById(R.id.edt_mobile_number);
         edt_email= (EditText)findViewById(R.id.edt_email);
         btnUpdate = (Button) findViewById(R.id.btn_update);
-        pgBar = (ProgressBar) findViewById(R.id.pgBar);
+
 
         edt_email.setText(email);
         edt_isd.setText(isd);
         edt_mob.setText(mobile);
-        edt_name.setText(name);
+        edt_name.setText(name);*/
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("My Profile");
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -85,7 +86,7 @@ public class DriverProfileEditActivity extends AppCompatActivity  {
                 onBackPressed();
             }
         });
-
+        btnUpdate = (Button) findViewById(R.id.btn_update);
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,6 +95,8 @@ public class DriverProfileEditActivity extends AppCompatActivity  {
             }
         });
 
+        pgBar = (ProgressBar) findViewById(R.id.pgBar);
+        hideProgressBar();
 
     }//Initialize()
 
@@ -102,6 +105,7 @@ public class DriverProfileEditActivity extends AppCompatActivity  {
                                  //  @Query("mobile") String mobile, @Query("email") String email);
 
     private void editDetails(){
+
 
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);

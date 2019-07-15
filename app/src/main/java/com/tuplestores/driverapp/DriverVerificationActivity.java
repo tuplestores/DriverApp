@@ -36,6 +36,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,6 +51,7 @@ public class DriverVerificationActivity extends AppCompatActivity {
     Map<String,String> isdMap;
     String tenant_id;
     Activity thisActivity;
+    ProgressBar pgBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,8 @@ public class DriverVerificationActivity extends AppCompatActivity {
             edtinviteCode = (EditText) findViewById(R.id.edtInviteCode);
             btnSignin = (Button) findViewById(R.id.btnSignin);
 
+            pgBar = (ProgressBar) findViewById(R.id.pgBar);
+            showHideProgress(false);
             edtisdCode.setText("");
 
             btnSignin.setOnClickListener(new View.OnClickListener() {
@@ -95,7 +99,19 @@ public class DriverVerificationActivity extends AppCompatActivity {
         }
     }
 
+    private void showHideProgress(boolean show){
+
+        if(show){
+            pgBar.setVisibility(View.VISIBLE);
+        }
+        else{
+            pgBar.setVisibility(View.GONE);
+        }
+    }
+
     private void signIn(){
+
+        showHideProgress(true);
 
         if(edtmobileNumber.getText()== null || edtmobileNumber.getText().toString().equals("")){
 
@@ -118,6 +134,7 @@ public class DriverVerificationActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<DriverModel> call, Response<DriverModel> response) {
 
+                    showHideProgress(false);
                     if(response.body()!=null) {
 
                         if(response.body().getStatus().equals("Y")) {

@@ -49,4 +49,8 @@
     <string name="problem_help_vattach">Driver check in failed..Please contact 9946935353 for further help</string>
     <string name="dettach_success">Drived checked out successfully!!</string>
 
+    <string name="ride_requeted_accepted">Ride request accepted.</string>
+    <string name="ride_requeted_rejected">Rejected the request.</string>
+    <string name="ride_requeted_cancelled">Cancelled the ride request.</string>
+
 </resources>

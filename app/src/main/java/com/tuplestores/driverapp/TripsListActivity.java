@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.View;
 
 import com.tuplestores.driverapp.api.ApiClient;
 import com.tuplestores.driverapp.api.ApiInterface;
@@ -17,7 +18,10 @@ import com.tuplestores.driverapp.model.TripsModel;
 import com.tuplestores.driverapp.model.VehicleModel;
 import com.tuplestores.driverapp.modeladapter.TripsAdapter;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import androidx.appcompat.widget.Toolbar;
@@ -38,14 +42,25 @@ public class TripsListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_trips_home_drw_main);
+        setContentView(R.layout.activity_trips_list_home);
         Initialize();
     }
 
     private void Initialize(){
 
-        toolbar = (Toolbar)findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_black);
+        toolbar.setTitle("Trips");
         setSupportActionBar(toolbar);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                finish();
+            }
+        });
+
         mAdapter = new TripsAdapter(lstTrips);
         rcvListTrips = (RecyclerView)findViewById(R.id.rclstTrips);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -57,10 +72,14 @@ public class TripsListActivity extends AppCompatActivity {
 
     private void fillTrips(){
 
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Calendar cal = Calendar.getInstance();
+        String fromdate = dateFormat.format(cal.getTime());
+
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
 
-        Call<List<TripsModel>> call = apiService.getTrips(driver_id,tenant_id);
+        Call<List<TripsModel>> call = apiService.getTrips(tenant_id,driver_id,fromdate,fromdate);
 
         call.enqueue(new Callback<List<TripsModel>>() {
             @Override

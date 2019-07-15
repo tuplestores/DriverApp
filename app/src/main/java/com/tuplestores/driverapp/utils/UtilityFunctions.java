@@ -16,7 +16,10 @@ import android.preference.PreferenceManager;
      public static String driver_id;
      public static String tenant_id;
      public static String v_id;
+     public static String ride_req_id;
      public static final String SHARED_P = "private_shared_peref";
+
+     public static String currentActivity="";
 
      public static boolean getSharedPreferenceOfDriver(Context ctx){
 
