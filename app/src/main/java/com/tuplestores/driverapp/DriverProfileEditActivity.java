@@ -30,6 +30,7 @@ import com.tuplestores.driverapp.api.ApiClient;
 import com.tuplestores.driverapp.api.ApiInterface;
 import com.tuplestores.driverapp.model.ApiResponse;
 import com.tuplestores.driverapp.model.DriverModel;
+import com.tuplestores.driverapp.utils.UtilityFunctions;
 
 public class DriverProfileEditActivity extends AppCompatActivity  {
 
@@ -54,7 +55,9 @@ public class DriverProfileEditActivity extends AppCompatActivity  {
 
          ctx = this;
 
-       /* driverId = this.getIntent().getStringExtra("DRIVER_ID");
+
+
+      driverId = this.getIntent().getStringExtra("DRIVER_ID");
         tenantId = this.getIntent().getStringExtra("TENANT_ID");
 
         email =  this.getIntent().getStringExtra("EMAIL");
@@ -72,7 +75,7 @@ public class DriverProfileEditActivity extends AppCompatActivity  {
         edt_email.setText(email);
         edt_isd.setText(isd);
         edt_mob.setText(mobile);
-        edt_name.setText(name);*/
+        edt_name.setText(name);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("My Profile");
         setSupportActionBar(toolbar);
@@ -100,19 +103,26 @@ public class DriverProfileEditActivity extends AppCompatActivity  {
 
     }//Initialize()
 
-    //Call<ApiResponse> updateDriver(@Query("tenant_id") String tenant_id, @Query("driver_id") String driver_id,
-                               //   @Query("name") String name, @Query("isd") String isd,
-                                 //  @Query("mobile") String mobile, @Query("email") String email);
 
     private void editDetails(){
 
 
+
+       // Call<ApiResponse> updateDriverProfile(@Query("tenant_id") String tenant_id,@Query("driver_id") String driver_id,
+               // @Query("email") String email,@Query("first_name") String first_name,
+               // @Query("last_name") String last_name,@Query("isd_code") String isd_code,
+              //  @Query("mobile") String mobile );
+        String lastName="";
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
 
-        Call<ApiResponse> call = apiService.updateDriverProfile(tenantId,driverId,edt_name.getText().toString(),
-                                                            edt_isd.getText().toString(),
-                                                         edt_mob.getText().toString(),edt_email.getText().toString());
+        Call<ApiResponse> call = apiService.updateDriverProfile(UtilityFunctions.tenant_id,
+                                                                UtilityFunctions.driver_id,
+                                                                edt_email.getText().toString(),
+                                                                edt_name.getText().toString(),
+                                                                lastName,
+                                                                 edt_isd.getText().toString(),
+                                                                 edt_mob.getText().toString());
 
         showProgressBar();
         call.enqueue(new Callback<ApiResponse>() {
@@ -170,8 +180,8 @@ public class DriverProfileEditActivity extends AppCompatActivity  {
                     public void onClick(DialogInterface dialog, int which) {
 
                         Intent ii = new Intent(ctx,DriverProfileActivity.class);
-                        ii.putExtra("DRIVER_ID",driverId);
-                        ii.putExtra("TENANT_ID",tenantId);
+                        //ii.putExtra("DRIVER_ID",UtilityFunctions.tenant_id);
+                        //ii.putExtra("TENANT_ID",UtilityFunctions.driver_id);
                         ctx.startActivity(ii);
                         finish();
                     }

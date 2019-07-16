@@ -88,9 +88,9 @@ public class DriverVerificationActivity extends AppCompatActivity {
            // edtisdCode.setText(ISDUtils.getISDCode(countryCodeValue));
 
             //Test values
-            edtisdCode.setText("91");
-            edtmobileNumber.setText("9876534567");
-            edtinviteCode.setText("2346");
+           // edtisdCode.setText("91");
+           // edtmobileNumber.setText("9876534567");
+           // edtinviteCode.setText("2346");
             thisActivity = this;
         }
         catch(Exception ex){

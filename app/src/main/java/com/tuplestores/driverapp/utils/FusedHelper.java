@@ -92,15 +92,15 @@ public class FusedHelper {
        // {
 
             try {
-                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
                 Calendar cal = Calendar.getInstance();
                 String dt = dateFormat.format(cal.getTime());
 
-                strbuf.append("<tid>" + tid + "</tid>" + "\n"
-                        + "<vid>" + vid + "</vid>" + "\n" +
-                        "<dt>" + dt + "</dt>" + "\n" +
-                        "<lon>" + loc.getLongitude() + "</lon>" + "\n" + "<lat>"
-                        + loc.getLatitude() + "</lat>"
+                strbuf.append("<tid>" + tid + "</tid>" +
+                         "<vid>" + vid + "</vid>" +
+                        "<dt>" + dt + "</dt>" +
+                        "<lat>" + loc.getLatitude() + "</lat>" +  "<lon>"
+                        + loc.getLongitude() + "</lon>"
                 );
                 //}
 
@@ -119,7 +119,7 @@ public class FusedHelper {
                 ApiInterface apiService =
                         ApiClient.getClient().create(ApiInterface.class);
 
-                Call<ApiResponse> call = apiService.loadDeviceData(strbuf.toString());
+                Call<ApiResponse> call = apiService.loadDeviceData(strbuf.toString().trim());
 
                 call.enqueue(new Callback<ApiResponse>() {
                     @Override

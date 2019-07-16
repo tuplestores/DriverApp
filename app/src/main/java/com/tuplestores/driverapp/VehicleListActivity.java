@@ -43,6 +43,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +62,7 @@ public class VehicleListActivity extends AppCompatActivity {
 
     ProgressBar pgBar;
     Context ctx;
+
 
 
     @Override
@@ -83,6 +85,7 @@ public class VehicleListActivity extends AppCompatActivity {
         pgBar = (ProgressBar) findViewById(R.id.pgBar);
         pgBar.setVisibility(View.GONE);
         lvVehicle = (ListView) findViewById(R.id.lvVehicles);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Select your vehicle");
         setSupportActionBar(toolbar);
@@ -152,6 +155,8 @@ public class VehicleListActivity extends AppCompatActivity {
 
                     lstVehicle = null;
                     //Show Blank template;
+
+
 
 
                 }

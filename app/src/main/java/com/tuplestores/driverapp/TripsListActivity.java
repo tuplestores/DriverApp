@@ -11,6 +11,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.tuplestores.driverapp.api.ApiClient;
 import com.tuplestores.driverapp.api.ApiInterface;
@@ -39,6 +41,9 @@ public class TripsListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private TripsAdapter mAdapter;
     String driver_id, tenant_id;
+    ProgressBar pgBar;
+
+    TextView emptyView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,11 +68,24 @@ public class TripsListActivity extends AppCompatActivity {
 
         mAdapter = new TripsAdapter(lstTrips);
         rcvListTrips = (RecyclerView)findViewById(R.id.rclstTrips);
+        emptyView = (TextView)findViewById(R.id.emptyview);
+        pgBar = (ProgressBar)findViewById(R.id.pgBar) ;
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         rcvListTrips.setLayoutManager(mLayoutManager);
         rcvListTrips.setAdapter(mAdapter);
+        showhidePgBar(false);
         fillTrips();
 
+    }
+
+    private void showhidePgBar(boolean show){
+
+        if(show){
+            pgBar.setVisibility(View.VISIBLE);
+        }
+        else{
+            pgBar.setVisibility(View.GONE);
+        }
     }
 
     private void fillTrips(){
@@ -76,6 +94,7 @@ public class TripsListActivity extends AppCompatActivity {
         Calendar cal = Calendar.getInstance();
         String fromdate = dateFormat.format(cal.getTime());
 
+       showhidePgBar(true);
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
 
@@ -85,7 +104,10 @@ public class TripsListActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<TripsModel>> call, Response<List<TripsModel>> response) {
 
+                showhidePgBar(false);
                 if(response.body()!=null){
+                    rcvListTrips.setVisibility(View.VISIBLE);
+                    emptyView.setVisibility(View.GONE);
 
                     lstTrips = response.body();
                     mAdapter.notifyDataSetChanged();
@@ -95,6 +117,8 @@ public class TripsListActivity extends AppCompatActivity {
 
                     lstTrips = null;
                     //Show Blank template;
+                    rcvListTrips.setVisibility(View.GONE);
+                    emptyView.setVisibility(View.VISIBLE);
 
 
                 }

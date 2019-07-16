@@ -51,10 +51,16 @@ public interface ApiInterface {
     @GET("dispatchAPI/getDriverProfile")
     Call<DriverModel> getDriverProfile(@Query("tenant_id") String tenant_id,@Query("driver_id") String driver_id);
 
-    @GET("dispatchAPI/updteDriver")
+    //http://localhost:8080/dispatchAPI/updateDriverProfile?tenant_id=90ed3aed-7c56-11e9-bf06-02306f682212&
+    // driver_id=e7bc46d6-7c56-11e9-bf06-02306f682212&email=babu@gmail.com&first_name=Raju&last_name&
+    // isd_code=91&mobile=9393030505
+
+
+    @GET("dispatchAPI/updateDriverProfile")
     Call<ApiResponse> updateDriverProfile(@Query("tenant_id") String tenant_id,@Query("driver_id") String driver_id,
-                                   @Query("name") String name,@Query("isd") String isd,
-                                   @Query("mobile") String mobile,@Query("email") String email);
+                                   @Query("email") String email,@Query("first_name") String first_name,
+                                   @Query("last_name") String last_name,@Query("isd_code") String isd_code,
+                                          @Query("mobile") String mobile );
 
     //@RequestParam String tenant_id,@RequestParam String driver_id
 

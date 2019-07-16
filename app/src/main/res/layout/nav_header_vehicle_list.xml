@@ -38,13 +38,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="Driver Name"
+        android:text=""
+        android:textColor="@color/colorTextBlue"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
         android:id="@+id/nav_text_prof2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="driver email" />
+        android:textColor="@color/colorTextBlue"
+        android:text="" />
 
 </LinearLayout>

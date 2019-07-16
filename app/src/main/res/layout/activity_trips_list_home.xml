@@ -25,10 +25,23 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="vertical"
             android:layout_marginTop="59dp">
+            <ProgressBar
+                android:id="@+id/pgBar"
+                android:layout_below="@id/linlay_humburger"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:max="100"
+                android:backgroundTint="@color/colorTextRed"
+                android:indeterminateTint="@color/colorTextBlue"
+                android:layout_marginTop="-7dp"/>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rclstTrips"
                 android:layout_width="match_parent"
@@ -36,6 +49,15 @@
                 android:scrollbars="vertical" >
 
             </androidx.recyclerview.widget.RecyclerView>
+
+            <TextView
+                android:layout_marginTop="70dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/emptyview"
+                android:visibility="gone"
+                android:layout_gravity="center"
+                android:text="No Trips found..."/>
 
         </LinearLayout>
 

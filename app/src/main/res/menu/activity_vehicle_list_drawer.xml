@@ -8,10 +8,10 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
-        <item
+       <!-- <item
             android:id="@+id/nav_attach_vehicle"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Attach Vehicle" />
+            android:title="Attach Vehicle" />-->
         <item
             android:id="@+id/nav_detach_vehicle"
             android:icon="@drawable/ic_menu_gallery"

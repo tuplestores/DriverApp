@@ -22,6 +22,9 @@ public class DriverModel {
      private String verified;
      private String invite_code;
      private String status;
+     private String driver_name;
+     private String driver_mobile;
+     private String driver_email;
 
     public String getTenant_id() {
         return tenant_id;
@@ -118,4 +121,30 @@ public class DriverModel {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public String getDriver_name() {
+        return driver_name;
+    }
+
+    public void setDriver_name(String driver_name) {
+        this.driver_name = driver_name;
+    }
+
+    public String getDriver_mobile() {
+        return driver_mobile;
+    }
+
+    public void setDriver_mobile(String driver_mobile) {
+        this.driver_mobile = driver_mobile;
+    }
+
+    public String getDriver_email() {
+        return driver_email;
+    }
+
+    public void setDriver_email(String driver_email) {
+        this.driver_email = driver_email;
+    }
+
+
 }

@@ -46,6 +46,7 @@ public class DriverProfileActivity extends AppCompatActivity {
    TextView tv_email;
    TextView tv_name;
    Context ctx;
+   String mobile, isd,mobileonly;
    ProgressBar pg;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +65,9 @@ public class DriverProfileActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-        TextView tv_mob= (TextView) (findViewById(R.id.tv_mob));
-        TextView tv_email= (TextView) (findViewById(R.id.tv_email));
-        TextView tv_name =  (TextView) (findViewById(R.id.tv_name));
+         tv_mob= (TextView) (findViewById(R.id.tv_mob));
+         tv_email= (TextView) (findViewById(R.id.tv_email));
+         tv_name =  (TextView) (findViewById(R.id.tv_name));
         pg = (ProgressBar)findViewById(R.id.pgBar) ;
 
 
@@ -83,7 +84,7 @@ public class DriverProfileActivity extends AppCompatActivity {
         ctx = this;
 
         if(UtilityFunctions.getAllSharedPrefValues(ctx)){
-           // fillDriverDetails();
+           fillDriverDetails();
         }
         else{
 
@@ -107,15 +108,43 @@ public class DriverProfileActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<DriverModel> call, Response<DriverModel> response) {
 
+
                 pg.setVisibility(View.INVISIBLE);
                 if(response.body()!=null){
 
                     DriverModel dm = response.body();
-                    tv_email.setText(dm.getEmail());
-                    String mob = dm.getIsd_code();
-                    mob= mob + "" + dm.getMobile();
-                    tv_mob.setText(mob);
-                    tv_name.setText(dm.getFirst_name());
+                    if(dm.getDriver_email()==null){
+                        tv_email.setText("");
+                    }
+                    else {
+                        tv_email.setText(dm.getDriver_email().toString());
+                    }
+                    if(dm.getIsd_code()==null){
+
+                        isd="";
+                    }
+                    else{
+                        isd = dm.getIsd_code();
+                    }
+                    if(dm.getDriver_mobile()==null){
+
+                        mobile = "";
+                    }
+                    else{
+                        mobile = dm.getDriver_mobile().toString();
+                        mobileonly=mobile;
+                    }
+                    mobile= isd + " "+mobile;
+                    tv_mob.setText(mobile);
+
+                    if(dm.getDriver_name()==null) {
+                        tv_name.setText("");
+                    }
+                    else{
+                        tv_name.setText(dm.getDriver_name());
+                    }
+
+
 
 
                 }
@@ -186,21 +215,19 @@ public class DriverProfileActivity extends AppCompatActivity {
 
     private void startProfileEdit(){
 
-       /* String name = tv_name.getText().toString();
-        String isd = tv_mob.getText().toString().substring(0,1);
-        String mobile = tv_mob.getText().toString();
+        String name = tv_name.getText().toString();
         String email = tv_email.getText().toString();
         Intent ii = new Intent(this,DriverProfileEditActivity.class);
         ii.putExtra("NAME",name);
         ii.putExtra("ISD",isd);
-        ii.putExtra("MOBILE",mobile);
+        ii.putExtra("MOBILE",mobileonly);
         ii.putExtra("EMAIL",email);
 
-        ii.putExtra("DRIVER_ID",driverId);
+        ii.putExtra("DRIVER_ID",UtilityFunctions.driver_id);
 
-        ii.putExtra("TENANT_ID",tenantId);*/
+        ii.putExtra("TENANT_ID",UtilityFunctions.tenant_id);
 
-        Intent ii = new Intent(this,DriverProfileEditActivity.class);
+
         this.startActivity(ii);
     }
 

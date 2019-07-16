@@ -130,6 +130,8 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
     ProgressBar pgBr;
     boolean driverAction = false;
 
+    TextView nav_text_profname;
+    TextView nav_text_prof2;
 
     private GoogleMap mMap;
 
@@ -165,6 +167,8 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
 
         getFirebaseTocken();
 
+
+
     }
 
     private void Initialize(){
@@ -190,12 +194,14 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
         pgBr = (ProgressBar) findViewById(R.id.pgBar);
         pgBr.setVisibility(View.GONE);
 
+
+
         counter = 1;
         thisActivity = this;
 
-        if(!UtilityFunctions.getSharedPreferenceOfDriver(this)){
+        if(!UtilityFunctions.getAllSharedPrefValues(this)){
 
-            ShowAlert(this,"",getResources().getString(R.string.something_failed));
+            ShowAlert(this,"F",getResources().getString(R.string.something_failed));
 
         }
 
@@ -318,6 +324,8 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
                         if(s!=null && !s.equals("")){
                             //Show Ride request popup
 
+                            //UtilityFunctions.ride_req_id=s;
+
                             startCountDownPopUp();
                         }
 
@@ -335,6 +343,67 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
                 }
         };//Receiver
 
+
+        View headerView = navigationView.getHeaderView(0);
+        nav_text_profname = (TextView) headerView.findViewById(R.id.nav_text_profname);
+        nav_text_prof2 = (TextView) headerView.findViewById(R.id.nav_text_prof2);
+
+
+        getDriverProfile();
+
+    }
+
+    private void getDriverProfile(){
+
+        ApiInterface apiService =
+                ApiClient.getClient().create(ApiInterface.class);
+
+        Call<DriverModel> call = apiService.getDriverProfile(UtilityFunctions.tenant_id,UtilityFunctions.driver_id);
+
+        call.enqueue(new Callback<DriverModel>() {
+            @Override
+            public void onResponse(Call<DriverModel> call, Response<DriverModel> response) {
+
+                String email,name;
+                if(response.body()!=null){
+
+                    DriverModel dm = response.body();
+                    if(dm.getDriver_email()==null){
+                       email="";
+                        nav_text_prof2.setText(email);
+                    }
+                    else {
+                        email = (dm.getDriver_email().toString());
+                    }
+
+                    if(dm.getDriver_name()==null) {
+                       name = "";
+                    }
+                    else{
+                        name = dm.getDriver_name();
+                        nav_text_profname.setText(name);
+                    }
+
+
+
+
+                }
+                else  if(response.body()==null){
+
+                    //Show Blank template;
+                    //ShowAlert(thisActivity,"",getResources().getString(R.string.something_failed));
+
+                }
+            }//OnResponse
+
+            @Override
+            public void onFailure(Call<DriverModel> call, Throwable t) {
+
+                //Something went wrong
+               // ShowAlert(ctx,getResources().getString(R.string.something_failed));
+
+            }
+        });
     }
 
     private void startCountDownPopUp(){
@@ -354,7 +423,9 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
 
                 if(response.body()!=null){
 
-                    fillTripRequestPopUp(response.body());
+                    TripRequest tr = response.body();
+
+                    fillTripRequestPopUp(tr);
 
                 }
                 else  if(response.body()==null){
@@ -646,14 +717,27 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_attach_vehicle) {
-            // Handle the camera action
-        } else if (id == R.id.nav_detach_vehicle) {
+             if (id == R.id.nav_detach_vehicle) {
 
-            detachVehicle(false);
+            if(UtilityFunctions.getAllSharedPrefValues(thisActivity)) {
+
+                detachVehicle(false);
+            }
+            else{
+
+                ShowAlert(thisActivity,"","It seems you haven't attached to any vehicle");
+            }
 
         } else if (id == R.id.nav_sign_out) {
-            detachVehicle(true);
+
+            if(UtilityFunctions.getAllSharedPrefValues(thisActivity)) {
+                detachVehicle(true);
+            }
+
+            else{
+
+                singOut();
+            }
 
 
         } else if (id == R.id.nav_profile) {
@@ -686,7 +770,18 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
         }
     }
 
+    private void showhidePgBar(boolean shown)
+    {
+        if(shown){
+            pgBr.setVisibility(View.VISIBLE);
+        }
+        else{
+            pgBr.setVisibility(View.GONE);
+        }
+    }
+
     private void detachVehicle(final boolean signout){
+        showhidePgBar(true);
 
         ApiInterface apiService =
                 ApiClient.getClient().create(ApiInterface.class);
@@ -697,6 +792,7 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
             @Override
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
 
+                showhidePgBar(false);
                 if(response.body()!=null){
 
                     if(response.body().getStatus().trim().equals("S")){
@@ -707,6 +803,9 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
                         else {
                             ShowAlert(thisActivity, "", getResources().getString(R.string.dettach_success));
                         }
+                    }
+                    else{
+                        ShowAlert(thisActivity, "", getResources().getString(R.string.something_failed));
                     }
 
 
@@ -822,7 +921,7 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
 
     }
 
-     private void ShowAlert(Context ctx, String focus, String msg){
+     private void ShowAlert(Context ctx, final String focus, String msg){
 
         androidx.appcompat.app.AlertDialog.Builder dlg = null;
 
@@ -834,10 +933,13 @@ public class DriverAppHome extends AppCompatActivity  implements NavigationView.
                     // The dialog is automatically dismissed when a dialog button is clicked.
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-
-                           finish();
+                            if(focus.equals("F")) {
+                                finish();
+                            }
                         }
                     });
+
+            dlg.show();
         }
 
 
